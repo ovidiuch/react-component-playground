@@ -3,8 +3,8 @@ require('./component-playground.less');
 var _ = require('lodash'),
     React = require('react/addons'),
     classSet = React.addons.classSet,
-    ComponentTree = require('react-component-tree');
-//RouterMixin = require('../mixins/router.js');
+    ComponentTree = require('react-component-tree'),
+    stringifyParams = require('react-minimal-router').uri.stringifyParams;
 
 module.exports = React.createClass({
   /**
@@ -112,7 +112,7 @@ module.exports = React.createClass({
         <div className="header">
           {this._renderButtons()}
           <h1>
-            <a href={this.getUrlFromProps(homeUrlProps)}
+            <a href={stringifyParams(homeUrlProps)}
                className="home-link"
                onClick={this.routeLink}>
               <span className="react">React</span> Component Playground
@@ -174,7 +174,7 @@ module.exports = React.createClass({
         return <li className={this._getFixtureClasses(componentName,
                                                       fixtureName)}
                    key={fixtureName}>
-          <a href={this.getUrlFromProps(fixtureProps)}
+          <a href={stringifyParams(fixtureProps)}
              title={fixtureName}
              onClick={this.routeLink}>
             {fixtureName}
@@ -237,14 +237,14 @@ module.exports = React.createClass({
     }
 
     return <li className={classes}>
-      <a href={this.getUrlFromProps(fixtureEditorUrlProps)}
+      <a href={stringifyParams(fixtureEditorUrlProps)}
          ref="fixtureEditorButton"
          onClick={this.routeLink}>Editor</a>
     </li>;
   },
 
   _renderFullScreenButton: function() {
-    var fullScreenUrl = this.getUrlFromProps({
+    var fullScreenUrl = stringifyParams({
       selectedComponent: this.props.selectedComponent,
       selectedFixture: this.props.selectedFixture,
       fullScreen: true
