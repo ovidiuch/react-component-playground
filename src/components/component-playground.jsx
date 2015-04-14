@@ -2,8 +2,8 @@ require('./component-playground.less');
 
 var _ = require('lodash'),
     React = require('react/addons'),
-    classSet = React.addons.classSet;
-//ComponentTree = require('../mixins/component-tree.js'),
+    classSet = React.addons.classSet,
+    ComponentTree = require('react-component-tree');
 //RouterMixin = require('../mixins/router.js');
 
 module.exports = React.createClass({
@@ -14,7 +14,7 @@ module.exports = React.createClass({
    */
   displayName: 'ComponentPlayground',
 
-  mixins: [/*ComponentTree, RouterMixin*/],
+  mixins: [ComponentTree.Mixin],
 
   propTypes: {
     fixtures: React.PropTypes.object.isRequired,
