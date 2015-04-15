@@ -1,9 +1,8 @@
 var $ = require('jquery'),
-    Cosmos = require('../../../cosmos.js'),
-    serialize = require('../../../lib/serialize.js'),
-    renderComponent = require('../../helpers/render-component.js'),
+    ComponentTree = require('react-component-tree'),
+    parseLocation = require('react-minimal-router').uri.parseLocation,
     ComponentPlayground =
-      require('../../../src/components/component-playground.jsx');
+        require('../../../src/components/component-playground.jsx');
 
 describe('ComponentPlayground component', function() {
   var component,
@@ -14,20 +13,23 @@ describe('ComponentPlayground component', function() {
     // Alow tests to extend fixture before rendering
     _.merge(props, extraProps);
 
-    component = renderComponent(ComponentPlayground, props);
+    component = ComponentTree.render({
+      component: ComponentPlayground,
+      snapshot: props,
+      container: document.createElement('div')
+    });
     $component = $(component.getDOMNode());
   }
 
   function getUrlProps(element) {
     var href = $(element).attr('href');
 
-    // The serialize and router.url libs are already tested
-    return serialize.getPropsFromQueryString(href.substr(1));
+    return parseLocation(href);
   }
 
   beforeEach(function() {
     // Don't render any children
-    sinon.stub(Cosmos, 'createElement');
+    sinon.stub(ComponentTree.loadChild, 'loadChild');
 
     props = {
       fixtures: {
@@ -44,7 +46,7 @@ describe('ComponentPlayground component', function() {
   });
 
   afterEach(function() {
-    Cosmos.createElement.restore();
+    ComponentTree.loadChild.loadChild.restore();
   })
 
   describe('render', function() {

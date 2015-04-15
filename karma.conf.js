@@ -29,7 +29,7 @@ module.exports = function(config) {
           loader: 'style-loader!css-loader!less-loader'
         }],
         postLoaders: [{
-          test: /\.js$/,
+          test: /\.jsx?$/,
           exclude: /(node_modules|tests)\//,
           loader: 'istanbul-instrumenter'
         }]

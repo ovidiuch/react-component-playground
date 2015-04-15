@@ -4,7 +4,7 @@ module.exports = {
   entry: './src/components/component-playground.jsx',
   externals: {
     'lodash': 'lodash',
-    'react/addons': 'react/addons'
+    'react': 'react'
   },
   module: {
     loaders: [{
@@ -20,7 +20,8 @@ module.exports = {
     }]
   },
   output: {
-    libraryTarget: 'commonjs2',
+    libraryTarget: 'umd',
+    library: 'ComponentPlayground',
     path: path.join(__dirname, 'build'),
     filename: 'bundle.js'
   }
