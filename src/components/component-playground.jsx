@@ -1,8 +1,8 @@
 require('./component-playground.less');
 
 var _ = require('lodash'),
-    React = require('react/addons'),
-    classSet = React.addons.classSet,
+    React = require('react'),
+    classNames = require('classnames'),
     ComponentTree = require('react-component-tree'),
     stringifyParams = require('react-minimal-router').uri.stringifyParams;
 
@@ -94,7 +94,7 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var classes = classSet({
+    var classes = classNames({
       'component-playground': true,
       'full-screen': this.props.fullScreen
     });
@@ -136,7 +136,7 @@ module.exports = React.createClass({
     return <ul className="components">
       {_.map(this.props.fixtures, function(fixtures, componentName) {
 
-        var classes = classSet({
+        var classes = classNames({
           'component': true,
           'expanded': _.contains(this.state.expandedComponents, componentName)
         });
@@ -192,7 +192,7 @@ module.exports = React.createClass({
   },
 
   _renderFixtureEditor: function() {
-    var editorClasses = classSet({
+    var editorClasses = classNames({
       'fixture-editor': true,
       'invalid-syntax': !this.state.isFixtureUserInputValid
     });
@@ -216,7 +216,7 @@ module.exports = React.createClass({
   },
 
   _renderFixtureEditorButton: function() {
-    var classes = classSet({
+    var classes = classNames({
       'fixture-editor-button': true,
       'selected-button': this.props.fixtureEditor
     });
@@ -310,7 +310,7 @@ module.exports = React.createClass({
       classes[this.props.containerClassName] = true;
     }
 
-    return classSet(classes);
+    return classNames(classes);
   },
 
   _getFixtureClasses: function(componentName, fixtureName) {
@@ -321,6 +321,6 @@ module.exports = React.createClass({
     classes['selected'] = componentName === this.props.selectedComponent &&
                           fixtureName === this.props.selectedFixture;
 
-    return classSet(classes);
+    return classNames(classes);
   }
 });

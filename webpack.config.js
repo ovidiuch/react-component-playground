@@ -4,8 +4,7 @@ module.exports = {
   entry: './src/components/component-playground.jsx',
   externals: {
     'lodash': 'lodash',
-    'react': 'react',
-    'react/addons': 'react/addons'
+    'react': 'react'
   },
   module: {
     loaders: [{
