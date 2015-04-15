@@ -14,6 +14,7 @@
     "babel-core": "^5.0.12",
     "babel-loader": "^5.0.0",
     "chai": "^2.2.0",
+    "classnames": "^1.2.0",
     "coveralls": "^2.11.2",
     "css-loader": "^0.10.1",
     "esprima-fb": "^14001.1.0-dev-harmony-fb",
