@@ -21,7 +21,8 @@ module.exports = {
     }]
   },
   output: {
-    libraryTarget: 'commonjs2',
+    libraryTarget: 'umd',
+    library: 'ComponentPlayground',
     path: path.join(__dirname, 'build'),
     filename: 'bundle.js'
   }
