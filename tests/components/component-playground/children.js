@@ -1,30 +1,28 @@
-var $ = require('jquery'),
-    Cosmos = require('../../../cosmos.js'),
-    renderComponent = require('../../helpers/render-component.js'),
+var ComponentTree = require('react-component-tree'),
     ComponentPlayground =
-      require('../../../src/components/component-playground.jsx');
+        require('../../../src/components/component-playground.jsx');
 
 describe('ComponentPlayground component', function() {
   var component,
-      $component,
       props,
-      childProps;
+      childParams;
 
   function render(extraProps) {
     // Alow tests to extend fixture before rendering
     _.merge(props, extraProps);
 
-    component = renderComponent(ComponentPlayground, props);
-    $component = $(component.getDOMNode());
+    component = ComponentTree.render({
+      component: ComponentPlayground,
+      snapshot: props,
+      container: document.createElement('div')
+    });
 
-    if (Cosmos.createElement.callCount) {
-      childProps = Cosmos.createElement.lastCall.args[0];
-    }
-  };
+    childParams = component.children.preview.call(component);
+  }
 
   beforeEach(function() {
     // Don't render any children
-    sinon.stub(Cosmos, 'createElement');
+    sinon.stub(ComponentTree.loadChild, 'loadChild');
 
     props = {
       fixtures: {}
@@ -32,14 +30,26 @@ describe('ComponentPlayground component', function() {
   });
 
   afterEach(function() {
-    Cosmos.createElement.restore();
+    ComponentTree.loadChild.loadChild.restore();
   })
 
   describe('children', function() {
     it('should not render child without fixture contents', function() {
       render();
 
-      expect(Cosmos.createElement).to.not.have.been.called;
+      expect(ComponentTree.loadChild.loadChild).to.not.have.been.called;
+    });
+
+    it('should render child with fixture contents', function() {
+      render({
+        state: {
+          fixtureContents: {
+            component: 'MyComponent'
+          }
+        }
+      });
+
+      expect(ComponentTree.loadChild.loadChild).to.have.been.called;
     });
 
     describe('with fixture contents', function() {
@@ -61,9 +71,9 @@ describe('ComponentPlayground component', function() {
         render();
 
         var fixtureContents = component.state.fixtureContents;
-        expect(childProps.component).to.equal(fixtureContents.component);
-        expect(childProps.width).to.equal(fixtureContents.width);
-        expect(childProps.height).to.equal(fixtureContents.height);
+        expect(childParams.component).to.equal(fixtureContents.component);
+        expect(childParams.width).to.equal(fixtureContents.width);
+        expect(childParams.height).to.equal(fixtureContents.height);
       });
 
       it('should use fixture contents as key for preview child', function() {
@@ -72,7 +82,7 @@ describe('ComponentPlayground component', function() {
         var fixtureContents = component.state.fixtureContents,
             stringifiedFixtureContents = JSON.stringify(fixtureContents);
 
-        expect(childProps.key).to.equal(stringifiedFixtureContents);
+        expect(childParams.key).to.equal(stringifiedFixtureContents);
       });
 
       it('should clone fixture contents sent to child', function() {
@@ -86,7 +96,7 @@ describe('ComponentPlayground component', function() {
           }
         });
 
-        expect(childProps.shouldBeCloned).to.not.equal(obj);
+        expect(childParams.shouldBeCloned).to.not.equal(obj);
       });
     });
   });

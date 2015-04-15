@@ -1,25 +1,25 @@
-var $ = require('jquery'),
-    Cosmos = require('../../../cosmos.js'),
-    renderComponent = require('../../helpers/render-component.js'),
+var ComponentTree = require('react-component-tree'),
     ComponentPlayground =
-      require('../../../src/components/component-playground.jsx');
+        require('../../../src/components/component-playground.jsx');
 
 describe('ComponentPlayground component', function() {
   var component,
-      $component,
       props;
 
   function render(extraProps) {
     // Alow tests to extend fixture before rendering
     _.merge(props, extraProps);
 
-    component = renderComponent(ComponentPlayground, props);
-    $component = $(component.getDOMNode());
+    component = ComponentTree.render({
+      component: ComponentPlayground,
+      snapshot: props,
+      container: document.createElement('div')
+    });
   };
 
   beforeEach(function() {
     // Don't render any children
-    sinon.stub(Cosmos, 'createElement');
+    sinon.stub(ComponentTree.loadChild, 'loadChild');
 
     props = {
       fixtures: {
@@ -38,7 +38,7 @@ describe('ComponentPlayground component', function() {
   });
 
   afterEach(function() {
-    Cosmos.createElement.restore();
+    ComponentTree.loadChild.loadChild.restore();
   })
 
   describe('state', function() {

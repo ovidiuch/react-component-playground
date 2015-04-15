@@ -1,22 +1,22 @@
 var React = require('react/addons'),
-    $ = require('jquery'),
-    Cosmos = require('../../../cosmos.js'),
-    renderComponent = require('../../helpers/render-component.js'),
+    ComponentTree = require('react-component-tree'),
     ComponentPlayground =
-      require('../../../src/components/component-playground.jsx');
+        require('../../../src/components/component-playground.jsx');
 
 describe('ComponentPlayground component', function() {
   var utils = React.addons.TestUtils,
       component,
-      $component,
       props;
 
   function render(extraProps) {
     // Alow tests to extend fixture before rendering
     _.merge(props, extraProps);
 
-    component = renderComponent(ComponentPlayground, props);
-    $component = $(component.getDOMNode());
+    component = ComponentTree.render({
+      component: ComponentPlayground,
+      snapshot: props,
+      container: document.createElement('div')
+    });
   };
 
   var triggerChange = function(value) {
@@ -28,7 +28,7 @@ describe('ComponentPlayground component', function() {
     sinon.stub(console, 'error');
 
     // Don't render any children
-    sinon.stub(Cosmos, 'createElement');
+    sinon.stub(ComponentTree.loadChild, 'loadChild');
 
     props = {
       fixtures: {}
@@ -38,7 +38,7 @@ describe('ComponentPlayground component', function() {
   afterEach(function() {
     console.error.restore();
 
-    Cosmos.createElement.restore();
+    ComponentTree.loadChild.loadChild.restore();
   })
 
   describe('events', function() {
