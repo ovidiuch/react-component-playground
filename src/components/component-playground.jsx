@@ -89,10 +89,6 @@ module.exports = React.createClass({
         key: JSON.stringify(this.state.fixtureContents)
       };
 
-      if (this.props.router) {
-        props.router = this.props.router;
-      }
-
       return _.merge(props, this.state.fixtureContents);
     }
   },

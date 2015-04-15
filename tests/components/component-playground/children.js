@@ -66,14 +66,6 @@ describe('ComponentPlayground component', function() {
         expect(childProps.height).to.equal(fixtureContents.height);
       });
 
-      it('should send (Cosmos) router instance to preview child', function() {
-        render({
-          router: {}
-        });
-
-        expect(childProps.router).to.equal(props.router);
-      });
-
       it('should use fixture contents as key for preview child', function() {
         render();
 
