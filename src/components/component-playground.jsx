@@ -108,9 +108,10 @@ module.exports = React.createClass({
         <div className="header">
           {this._renderButtons()}
           <h1>
-            <a href={stringifyParams(homeUrlProps)}
+            <a ref="homeLink"
+               href={stringifyParams(homeUrlProps)}
                className="home-link"
-               onClick={this.routeLink}>
+               onClick={this.props.router.routeLink}>
               <span className="react">React</span> Component Playground
             </a>
             {_.isEmpty(this.state.fixtureContents) ? this._renderCosmosPlug()
@@ -170,9 +171,10 @@ module.exports = React.createClass({
         return <li className={this._getFixtureClasses(componentName,
                                                       fixtureName)}
                    key={fixtureName}>
-          <a href={stringifyParams(fixtureProps)}
+          <a ref={componentName + fixtureName + 'Button'}
+             href={stringifyParams(fixtureProps)}
              title={fixtureName}
-             onClick={this.routeLink}>
+             onClick={this.props.router.routeLink}>
             {fixtureName}
           </a>
         </li>;
@@ -235,7 +237,7 @@ module.exports = React.createClass({
     return <li className={classes}>
       <a href={stringifyParams(fixtureEditorUrlProps)}
          ref="fixtureEditorButton"
-         onClick={this.routeLink}>Editor</a>
+         onClick={this.props.router.routeLink}>Editor</a>
     </li>;
   },
 
@@ -249,7 +251,7 @@ module.exports = React.createClass({
     return <li className="full-screen-button">
       <a href={fullScreenUrl}
          ref="fullScreenButton"
-         onClick={this.routeLink}>Fullscreen</a>
+         onClick={this.props.router.routeLink}>Fullscreen</a>
     </li>;
   },
 

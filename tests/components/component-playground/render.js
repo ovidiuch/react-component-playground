@@ -41,6 +41,9 @@ describe('ComponentPlayground component', function() {
         SecondComponent: {
           'simple state': {}
         }
+      },
+      router: {
+        routeLink: sinon.spy()
       }
     };
   });

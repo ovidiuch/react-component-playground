@@ -33,6 +33,9 @@ describe('ComponentPlayground component', function() {
             myProp: true
           }
         }
+      },
+      router: {
+        routeLink: sinon.spy()
       }
     };
   });
