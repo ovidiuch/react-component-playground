@@ -32,7 +32,10 @@ describe('ComponentPlayground component', function() {
         },
         SecondComponent: {
           'simple state': {
-            myProp: true
+            myProp: true,
+            state: {
+              somethingHappened: false
+            }
           }
         }
       },
@@ -130,6 +133,12 @@ describe('ComponentPlayground component', function() {
 
         it('should reset valid user input flag', function() {
           expect(component.state.isFixtureUserInputValid).to.be.true;
+        });
+
+        it('should inject new state to preview child', function() {
+          var args = ComponentTree.injectState.lastCall.args;
+          expect(args[0]).to.equal(component.refs.preview);
+          expect(args[1].somethingHappened).to.equal(false);
         });
       });
     });
