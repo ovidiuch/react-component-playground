@@ -31,7 +31,10 @@ describe('ComponentPlayground component', function() {
     sinon.stub(ComponentTree.loadChild, 'loadChild');
 
     props = {
-      fixtures: {}
+      fixtures: {},
+      router: {
+        routeLink: sinon.spy()
+      }
     };
   });
 
@@ -89,6 +92,36 @@ describe('ComponentPlayground component', function() {
         var expandedComponents = component.state.expandedComponents;
         expect(expandedComponents.length).to.equal(1);
         expect(expandedComponents[0]).to.equal('FirstComponent');
+      });
+
+      describe('router links', function() {
+        beforeEach(function() {
+          render({
+            selectedComponent: 'SecondComponent',
+            selectedFixture: 'simple state'
+          });
+        });
+
+        afterEach(function() {
+          expect(props.router.routeLink).to.have.been.called;
+        });
+
+        it('should route link on home button', function() {
+          utils.Simulate.click(component.refs.homeLink.getDOMNode());
+        });
+
+        it('should route link on component fixture button', function() {
+          utils.Simulate.click(
+              component.refs['SecondComponentsimple stateButton'].getDOMNode());
+        });
+
+        it('should route link on fixture editor button', function() {
+          utils.Simulate.click(component.refs.fixtureEditorButton.getDOMNode());
+        });
+
+        it('should route link on full screen button', function() {
+          utils.Simulate.click(component.refs.fullScreenButton.getDOMNode());
+        });
       });
     });
 

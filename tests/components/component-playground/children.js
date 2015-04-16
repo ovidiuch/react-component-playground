@@ -25,7 +25,10 @@ describe('ComponentPlayground component', function() {
     sinon.stub(ComponentTree.loadChild, 'loadChild');
 
     props = {
-      fixtures: {}
+      fixtures: {},
+      router: {
+        routeLink: sinon.spy()
+      }
     };
   });
 
