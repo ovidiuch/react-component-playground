@@ -89,7 +89,7 @@ module.exports = React.createClass({
         key: JSON.stringify(this.state.fixtureContents)
       };
 
-      return _.merge(props, this.state.fixtureContents);
+      return _.merge(props, _.omit(this.state.fixtureContents, 'state'));
     }
   },
 
@@ -255,11 +255,28 @@ module.exports = React.createClass({
     </li>;
   },
 
+  componentDidMount: function() {
+    if (this.refs.preview) {
+      this._injectPreviewChildState();
+    }
+  },
+
   componentWillReceiveProps: function(nextProps) {
     if (nextProps.selectedComponent !== this.props.selectedComponent ||
         nextProps.selectedFixture !== this.props.selectedFixture) {
       this.setState(this.constructor.getFixtureState(
           nextProps, this.state.expandedComponents));
+    }
+  },
+
+  componentDidUpdate: function(prevProps, prevState) {
+    if (this.refs.preview && (
+        // Avoid deep comparing the fixture contents when component and/or
+        // fixture changed, because it's more expensive
+        this.props.selectedComponent !== prevProps.selectedComponent ||
+        this.props.selectedFixture !== prevProps.selectedFixture ||
+        !_.isEqual(this.state.fixtureContents, prevState.fixtureContents))) {
+      this._injectPreviewChildState();
     }
   },
 
@@ -324,5 +341,13 @@ module.exports = React.createClass({
                           fixtureName === this.props.selectedFixture;
 
     return classNames(classes);
+  },
+
+  _injectPreviewChildState: function() {
+    var state = this.state.fixtureContents.state;
+
+    if (!_.isEmpty(state)) {
+      ComponentTree.injectState(this.refs.preview, _.cloneDeep(state));
+    }
   }
 });
