@@ -18,14 +18,16 @@ describe('ComponentPlayground component', function() {
   };
 
   beforeEach(function() {
-    // Don't render any children
-    sinon.stub(ComponentTree.loadChild, 'loadChild');
+    sinon.stub(ComponentTree, 'injectState');
 
     props = {
       fixtures: {
         FirstComponent: {
           'blank state': {
-            myProp: false
+            myProp: false,
+            state: {
+              somethingHappened: true
+            }
           }
         },
         SecondComponent: {
@@ -41,7 +43,7 @@ describe('ComponentPlayground component', function() {
   });
 
   afterEach(function() {
-    ComponentTree.loadChild.loadChild.restore();
+    ComponentTree.injectState.restore();
   })
 
   describe('state', function() {
@@ -82,6 +84,15 @@ describe('ComponentPlayground component', function() {
 
         expect(component.state.fixtureUserInput)
               .to.equal(JSON.stringify(fixtureContents, null, 2));
+      });
+
+      // TODO: Test this on fixture transition as well
+      it('should inject state to preview child', function() {
+        render();
+
+        var args = ComponentTree.injectState.lastCall.args;
+        expect(args[0]).to.equal(component.refs.preview);
+        expect(args[1].somethingHappened).to.equal(true);
       });
 
       describe('on fixture transition', function() {

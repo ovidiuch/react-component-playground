@@ -64,7 +64,10 @@ describe('ComponentPlayground component', function() {
             fixtureContents: {
               component: 'MyComponent',
               width: 200,
-              height: 100
+              height: 100,
+              state: {
+                paused: true
+              }
             }
           }
         });
@@ -77,6 +80,13 @@ describe('ComponentPlayground component', function() {
         expect(childParams.component).to.equal(fixtureContents.component);
         expect(childParams.width).to.equal(fixtureContents.width);
         expect(childParams.height).to.equal(fixtureContents.height);
+      });
+
+      it('should not send state as prop to preview child', function() {
+        render();
+
+        var fixtureContents = component.state.fixtureContents;
+        expect(childParams.state).to.be.undefined;
       });
 
       it('should use fixture contents as key for preview child', function() {
