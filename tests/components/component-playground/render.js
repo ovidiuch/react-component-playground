@@ -7,15 +7,15 @@ var $ = require('jquery'),
 describe('ComponentPlayground component', function() {
   var component,
       $component,
-      props;
+      params;
 
   function render(extraProps) {
     // Alow tests to extend fixture before rendering
-    _.merge(props, extraProps);
+    _.merge(params, extraProps);
 
     component = ComponentTree.render({
       component: ComponentPlayground,
-      snapshot: props,
+      snapshot: params,
       container: document.createElement('div')
     });
     $component = $(component.getDOMNode());
@@ -31,15 +31,19 @@ describe('ComponentPlayground component', function() {
     // Don't render any children
     sinon.stub(ComponentTree.loadChild, 'loadChild');
 
-    props = {
-      fixtures: {
+    params = {
+      components: {
         FirstComponent: {
-          'blank state': {},
-          'error state': {},
-          'simple state': {}
+          fixtures: {
+            'blank state': {},
+            'error state': {},
+            'simple state': {}
+          }
         },
         SecondComponent: {
-          'simple state': {}
+          fixtures: {
+            'simple state': {}
+          }
         }
       },
       router: {
@@ -57,18 +61,6 @@ describe('ComponentPlayground component', function() {
       render();
 
       expect(component.refs.cosmosPlug).to.exist;
-    });
-
-    it('should not render cosmos plug with preview loaded', function() {
-      render({
-        state: {
-          fixtureContents: {
-            myProp: true
-          }
-        }
-      });
-
-      expect(component.refs.cosmosPlug).to.not.exist;
     });
 
     it('should render each component', function() {
@@ -143,24 +135,11 @@ describe('ComponentPlayground component', function() {
       expect(component.refs.fullScreenButton).to.not.exist;
     });
 
-    it('should render fixture editor button',
+    it('should not render fixture editor button',
        function() {
       render();
 
-      var element = component.refs.fixtureEditorButton.getDOMNode(),
-          urlProps = getUrlProps(element);
-
-      expect(urlProps.fixtureEditor).to.equal(true);
-    });
-
-    it('should add container class on preview element', function() {
-      render({
-        containerClassName: 'my-app-namespace'
-      });
-
-      var $previewDOMNode = $(component.refs.previewContainer.getDOMNode());
-
-      expect($previewDOMNode.hasClass('my-app-namespace')).to.equal(true);
+      expect(component.refs.fixtureEditorButton).to.not.exist;
     });
 
     it('should not render fixture editor by default', function() {
@@ -171,10 +150,26 @@ describe('ComponentPlayground component', function() {
 
     describe('with fixture selected', function() {
       beforeEach(function() {
-        _.extend(props, {
+        _.assign(params, {
           selectedComponent: 'FirstComponent',
           selectedFixture: 'simple state'
         })
+      });
+
+      it('should not render cosmos plug', function() {
+        render();
+
+        expect(component.refs.cosmosPlug).to.not.exist;
+      });
+
+      it('should add container class on preview element', function() {
+        render({
+          containerClassName: 'my-app-namespace'
+        });
+
+        var $previewDOMNode = $(component.refs.previewContainer.getDOMNode());
+
+        expect($previewDOMNode.hasClass('my-app-namespace')).to.equal(true);
       });
 
       it('should add expanded class to selected component', function() {
@@ -207,6 +202,18 @@ describe('ComponentPlayground component', function() {
         expect(urlProps.fullScreen).to.equal(true);
       });
 
+      it('should generate fixture editor url',
+         function() {
+        render();
+
+        var element = component.refs.fixtureEditorButton.getDOMNode(),
+            urlProps = getUrlProps(element);
+
+        expect(urlProps.selectedComponent).to.equal('FirstComponent');
+        expect(urlProps.selectedFixture).to.equal('simple state');
+        expect(urlProps.fixtureEditor).to.equal(true);
+      });
+
       it('should include component and fixture in fixture editor url',
          function() {
         render();
@@ -218,89 +225,89 @@ describe('ComponentPlayground component', function() {
         expect(urlProps.selectedFixture).to.equal('simple state');
         expect(urlProps.fixtureEditor).to.equal(true);
       });
-    });
 
-    describe('with fixture editor open', function() {
-      beforeEach(function() {
-        props.fixtureEditor = true;
-      });
-
-      it('should render fixture editor', function() {
-        render();
-
-        expect(component.refs.fixtureEditor).to.exist;
-      });
-
-      it('should add class on preview container', function() {
-        render();
-
-        expect($(component.refs.previewContainer.getDOMNode())
-               .hasClass('aside-fixture-editor')).to.be.true;
-      });
-
-      it('should populate fixture editor textarea from state', function() {
-        render({
-          state: {
-            fixtureUserInput: 'lorem ipsum'
-          }
+      describe('with fixture editor open', function() {
+        beforeEach(function() {
+          params.fixtureEditor = true;
         });
 
-        expect(component.refs.fixtureEditor.getDOMNode().value)
-               .to.equal(component.state.fixtureUserInput);
+        it('should render fixture editor', function() {
+          render();
+
+          expect(component.refs.fixtureEditor).to.exist;
+        });
+
+        it('should add class on preview container', function() {
+          render();
+
+          expect($(component.refs.previewContainer.getDOMNode())
+                 .hasClass('aside-fixture-editor')).to.be.true;
+        });
+
+        it('should populate fixture editor textarea from state', function() {
+          render({
+            state: {
+              fixtureUserInput: 'lorem ipsum'
+            }
+          });
+
+          expect(component.refs.fixtureEditor.getDOMNode().value)
+                 .to.equal(component.state.fixtureUserInput);
+        });
+
+        it('should generate selected fixture editor button', function() {
+          render();
+
+          expect($(component.getDOMNode())
+                 .find('.fixture-editor-button')
+                 .hasClass('selected-button')).to.be.true;
+        });
+
+        it('should generate url for closing fixture editor', function() {
+          render();
+
+          var element = component.refs.fixtureEditorButton.getDOMNode(),
+              urlProps = getUrlProps(element);
+
+          expect(urlProps.fixtureEditor).to.equal(false);
+        });
+
+        it('should include fixtor editor in fixture url', function() {
+          var firstFixtureLink = $component.find('.component-fixture a'),
+              urlProps = getUrlProps(firstFixtureLink);
+
+          expect(urlProps.selectedComponent).to.equal('FirstComponent');
+          expect(urlProps.selectedFixture).to.equal('blank state');
+          expect(urlProps.fixtureEditor).to.equal(true);
+        });
+
+        it('should add invalid class on fixture editor on state flag',
+           function() {
+          render({
+            state: {
+              isFixtureUserInputValid: false
+            }
+          });
+
+          expect($(component.refs.fixtureEditor.getDOMNode())
+                 .hasClass('invalid-syntax')).to.be.true;
+        });
       });
 
-      it('should generate selected fixture editor button', function() {
-        render();
-
-        expect($(component.getDOMNode())
-               .find('.fixture-editor-button')
-               .hasClass('selected-button')).to.be.true;
-      });
-
-      it('should generate url for closing fixture editor', function() {
-        render();
+      it('should generate url for closing editor with fixture', function() {
+        render({
+          selectedComponent: 'FirstComponent',
+          selectedFixture: 'simple state',
+          fixtureEditor: true
+        });
 
         var element = component.refs.fixtureEditorButton.getDOMNode(),
             urlProps = getUrlProps(element);
 
+        expect(urlProps.selectedComponent).to.equal('FirstComponent');
+        expect(urlProps.selectedFixture).to.equal('simple state');
         expect(urlProps.fixtureEditor).to.equal(false);
       });
-
-      it('should include fixtor editor in fixture url', function() {
-        var firstFixtureLink = $component.find('.component-fixture a'),
-            urlProps = getUrlProps(firstFixtureLink);
-
-        expect(urlProps.selectedComponent).to.equal('FirstComponent');
-        expect(urlProps.selectedFixture).to.equal('blank state');
-        expect(urlProps.fixtureEditor).to.equal(true);
-      });
-
-      it('should add invalid class on fixture editor on state flag',
-         function() {
-        render({
-          state: {
-            isFixtureUserInputValid: false
-          }
-        });
-
-        expect($(component.refs.fixtureEditor.getDOMNode())
-               .hasClass('invalid-syntax')).to.be.true;
-      });
-    });
-
-    it('should generate url for closing editor with fixture', function() {
-      render({
-        selectedComponent: 'FirstComponent',
-        selectedFixture: 'simple state',
-        fixtureEditor: true
-      });
-
-      var element = component.refs.fixtureEditorButton.getDOMNode(),
-          urlProps = getUrlProps(element);
-
-      expect(urlProps.selectedComponent).to.equal('FirstComponent');
-      expect(urlProps.selectedFixture).to.equal('simple state');
-      expect(urlProps.fixtureEditor).to.equal(false);
     });
   });
 });

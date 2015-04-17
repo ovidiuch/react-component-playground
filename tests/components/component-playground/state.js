@@ -4,33 +4,44 @@ var ComponentTree = require('react-component-tree'),
 
 describe('ComponentPlayground component', function() {
   var component,
-      props;
+      params;
 
   function render(extraProps) {
     // Alow tests to extend fixture before rendering
-    _.merge(props, extraProps);
+    _.merge(params, extraProps);
 
     component = ComponentTree.render({
       component: ComponentPlayground,
-      snapshot: props,
+      snapshot: params,
       container: document.createElement('div')
     });
   };
 
   beforeEach(function() {
-    // Don't render any children
-    sinon.stub(ComponentTree.loadChild, 'loadChild');
+    sinon.stub(ComponentTree, 'injectState');
 
-    props = {
-      fixtures: {
+    params = {
+      components: {
         FirstComponent: {
-          'blank state': {
-            myProp: false
+          class: 'FirstComponent',
+          fixtures: {
+            'blank state': {
+              myProp: false,
+              state: {
+                somethingHappened: true
+              }
+            }
           }
         },
         SecondComponent: {
-          'simple state': {
-            myProp: true
+          class: 'SecondComponent',
+          fixtures: {
+            'simple state': {
+              myProp: true,
+              state: {
+                somethingHappened: false
+              }
+            }
           }
         }
       },
@@ -41,7 +52,7 @@ describe('ComponentPlayground component', function() {
   });
 
   afterEach(function() {
-    ComponentTree.loadChild.loadChild.restore();
+    ComponentTree.injectState.restore();
   })
 
   describe('state', function() {
@@ -53,7 +64,7 @@ describe('ComponentPlayground component', function() {
 
     describe('with fixture selected', function() {
       beforeEach(function() {
-        _.extend(props, {
+        _.extend(params, {
           selectedComponent: 'FirstComponent',
           selectedFixture: 'blank state'
         });
@@ -84,6 +95,14 @@ describe('ComponentPlayground component', function() {
               .to.equal(JSON.stringify(fixtureContents, null, 2));
       });
 
+      it('should inject state to preview child', function() {
+        render();
+
+        var args = ComponentTree.injectState.lastCall.args;
+        expect(args[0]).to.equal(component.refs.preview);
+        expect(args[1].somethingHappened).to.equal(true);
+      });
+
       describe('on fixture transition', function() {
         beforeEach(function() {
           render({
@@ -111,7 +130,8 @@ describe('ComponentPlayground component', function() {
         });
 
         it('should reset fixture user input', function() {
-          var fixtureContents = props.fixtures.FirstComponent['blank state'];
+          var fixtureContents =
+              params.components.FirstComponent.fixtures['blank state'];
 
           expect(JSON.parse(component.state.fixtureUserInput).myProp)
                 .to.equal(true);
@@ -119,6 +139,12 @@ describe('ComponentPlayground component', function() {
 
         it('should reset valid user input flag', function() {
           expect(component.state.isFixtureUserInputValid).to.be.true;
+        });
+
+        it('should inject new state to preview child', function() {
+          var args = ComponentTree.injectState.lastCall.args;
+          expect(args[0]).to.equal(component.refs.preview);
+          expect(args[1].somethingHappened).to.equal(false);
         });
       });
     });
