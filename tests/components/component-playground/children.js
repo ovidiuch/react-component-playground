@@ -4,28 +4,37 @@ var ComponentTree = require('react-component-tree'),
 
 describe('ComponentPlayground component', function() {
   var component,
-      props,
+      params,
       childParams;
 
-  function render(extraProps) {
+  function render(extraParams) {
     // Alow tests to extend fixture before rendering
-    _.merge(props, extraProps);
+    _.merge(params, extraParams);
 
     component = ComponentTree.render({
       component: ComponentPlayground,
-      snapshot: props,
+      snapshot: params,
       container: document.createElement('div')
     });
 
-    childParams = component.children.preview.call(component);
+    if (params.selectedComponent) {
+      childParams = component.children.preview.call(component);
+    }
   }
 
   beforeEach(function() {
     // Don't render any children
     sinon.stub(ComponentTree.loadChild, 'loadChild');
 
-    props = {
-      fixtures: {},
+    params = {
+      components: {
+        FirstComponent: {
+          class: 'FirstComponent',
+          fixtures: {
+            'default state': {}
+          }
+        }
+      },
       router: {
         routeLink: sinon.spy()
       }
@@ -37,19 +46,16 @@ describe('ComponentPlayground component', function() {
   })
 
   describe('children', function() {
-    it('should not render child without fixture contents', function() {
+    it('should not render child without selected fixture', function() {
       render();
 
       expect(ComponentTree.loadChild.loadChild).to.not.have.been.called;
     });
 
-    it('should render child with fixture contents', function() {
+    it('should render child with selected fixture', function() {
       render({
-        state: {
-          fixtureContents: {
-            component: 'MyComponent'
-          }
-        }
+        selectedComponent: 'FirstComponent',
+        selectedFixture: 'default state'
       });
 
       expect(ComponentTree.loadChild.loadChild).to.have.been.called;
@@ -57,12 +63,12 @@ describe('ComponentPlayground component', function() {
 
     describe('with fixture contents', function() {
       beforeEach(function() {
-        _.extend(props, {
+        _.assign(params, {
+          selectedComponent: 'FirstComponent',
           // Children draw their props from state.fixtureContents. Generating
           // state from props is tested in the state.js suite
           state: {
             fixtureContents: {
-              component: 'MyComponent',
               width: 200,
               height: 100,
               state: {
@@ -73,11 +79,17 @@ describe('ComponentPlayground component', function() {
         });
       });
 
+      it('should send component class to preview child', function() {
+        render();
+
+        expect(childParams.component)
+              .to.equal(params.components['FirstComponent'].class);
+      });
+
       it('should send fixture contents to preview child', function() {
         render();
 
         var fixtureContents = component.state.fixtureContents;
-        expect(childParams.component).to.equal(fixtureContents.component);
         expect(childParams.width).to.equal(fixtureContents.width);
         expect(childParams.height).to.equal(fixtureContents.height);
       });
@@ -101,15 +113,13 @@ describe('ComponentPlayground component', function() {
       it('should clone fixture contents sent to child', function() {
         var obj = {};
 
-        render({
-          state: {
-            fixtureContents: {
-              shouldBeCloned: obj
-            }
-          }
-        });
+        params.state.fixtureContents.nested = {
+          shouldBeCloned: obj
+        };
 
-        expect(childParams.shouldBeCloned).to.not.equal(obj);
+        render();
+
+        expect(childParams.nested.shouldBeCloned).to.not.equal(obj);
       });
     });
   });

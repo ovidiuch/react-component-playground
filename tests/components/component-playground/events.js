@@ -6,15 +6,15 @@ var React = require('react/addons'),
 describe('ComponentPlayground component', function() {
   var utils = React.addons.TestUtils,
       component,
-      props;
+      params;
 
-  function render(extraProps) {
+  function render(extraParams) {
     // Alow tests to extend fixture before rendering
-    _.merge(props, extraProps);
+    _.merge(params, extraParams);
 
     component = ComponentTree.render({
       component: ComponentPlayground,
-      snapshot: props,
+      snapshot: params,
       container: document.createElement('div')
     });
   };
@@ -30,8 +30,8 @@ describe('ComponentPlayground component', function() {
     // Don't render any children
     sinon.stub(ComponentTree.loadChild, 'loadChild');
 
-    props = {
-      fixtures: {},
+    params = {
+      components: {},
       router: {
         routeLink: sinon.spy()
       }
@@ -47,10 +47,12 @@ describe('ComponentPlayground component', function() {
   describe('events', function() {
     describe('clicking on components', function() {
       beforeEach(function() {
-        props.fixtures = {
+        params.components = {
           FirstComponent: {},
           SecondComponent: {
-            'simple state': {}
+            fixtures: {
+              'simple state': {}
+            }
           }
         };
       });
@@ -103,7 +105,7 @@ describe('ComponentPlayground component', function() {
         });
 
         afterEach(function() {
-          expect(props.router.routeLink).to.have.been.called;
+          expect(params.router.routeLink).to.have.been.called;
         });
 
         it('should route link on home button', function() {
@@ -126,15 +128,22 @@ describe('ComponentPlayground component', function() {
     });
 
     describe('editing fixture', function() {
-      var initialFixtureContents = {
-        myProp: 'dolor sit'
-      };
-
       beforeEach(function() {
         render({
+          components: {
+            MyComponent: {
+              fixtures: {
+                'simple state': {}
+              }
+            }
+          },
+          selectedComponent: 'MyComponent',
+          selectedFixture: 'simple state',
           fixtureEditor: true,
           state: {
-            fixtureContents: initialFixtureContents
+            fixtureContents: {
+              lorem: 'dolor sit'
+            }
           }
         });
       });
@@ -154,8 +163,7 @@ describe('ComponentPlayground component', function() {
       it('should not update fixture contents on invalid change', function() {
         triggerChange('lorem ipsum');
 
-        expect(component.state.fixtureContents.myProp)
-               .to.equal(initialFixtureContents.myProp);
+        expect(component.state.fixtureContents.lorem).to.equal('dolor sit');
       });
 
       it('should empty fixture contents on empty input', function() {
@@ -183,21 +191,21 @@ describe('ComponentPlayground component', function() {
       });
     });
 
-    describe('editing fixture with selected fixture', function() {
-      var fixtures = {
-        MyComponent: {
-          'simple state': {
-            defaultProp: true,
-            nested: {
-              nestedProp: true
-            }
-          }
-        }
-      };
-
+    describe('editing and extending fixture', function() {
       beforeEach(function() {
-        _.extend(props, {
-          fixtures: fixtures,
+        _.assign(params, {
+          components: {
+            MyComponent: {
+              fixtures: {
+                'simple state': {
+                  defaultProp: true,
+                  nested: {
+                    nestedProp: true
+                  }
+                }
+              }
+            }
+          },
           selectedComponent: 'MyComponent',
           selectedFixture: 'simple state',
           fixtureEditor: true
@@ -216,8 +224,8 @@ describe('ComponentPlayground component', function() {
       it('should not alter the original fixture contents', function() {
         triggerChange('{"nested": {"nestedProp": false}}');
 
-        expect(fixtures.MyComponent['simple state'].nested.nestedProp)
-              .to.be.true;
+        expect(params.components.MyComponent
+               .fixtures['simple state'].nested.nestedProp).to.be.true;
       });
     });
   });

@@ -17,7 +17,7 @@ module.exports = React.createClass({
   mixins: [ComponentTree.Mixin],
 
   propTypes: {
-    fixtures: React.PropTypes.object.isRequired,
+    components: React.PropTypes.object.isRequired,
     selectedComponent: React.PropTypes.string,
     selectedFixture: React.PropTypes.string,
     fixtureEditor: React.PropTypes.bool,
@@ -39,35 +39,36 @@ module.exports = React.createClass({
       return props.selectedComponent && props.selectedFixture;
     },
 
+    getSelectedComponentClass: function(props) {
+      return props.components[props.selectedComponent].class;
+    },
+
     getSelectedFixtureContents: function(props) {
-      if (!this.isFixtureSelected(props)) {
-        return {};
-      }
-
-      var fixture = props.fixtures[props.selectedComponent]
-                                  [props.selectedFixture];
-
-      return _.merge({
-        component: props.selectedComponent
-      }, fixture);
+      return props.components[props.selectedComponent]
+                  .fixtures[props.selectedFixture];
     },
 
     getSelectedFixtureUserInput: function(props) {
-      if (!this.isFixtureSelected(props)) {
-        return '{}';
-      }
-
       return JSON.stringify(this.getSelectedFixtureContents(props), null, 2);
     },
 
     getFixtureState: function(props, expandedComponents) {
-      return {
-        expandedComponents: this.getExpandedComponents(props,
-                                                       expandedComponents),
-        fixtureContents: this.getSelectedFixtureContents(props),
-        fixtureUserInput: this.getSelectedFixtureUserInput(props),
+      var state = {
+        expandedComponents:
+            this.getExpandedComponents(props, expandedComponents),
+        fixtureContents: {},
+        fixtureUserInput: '{}',
         isFixtureUserInputValid: true
       };
+
+      if (this.isFixtureSelected(props)) {
+        _.assign(state, {
+          fixtureContents: this.getSelectedFixtureContents(props),
+          fixtureUserInput: this.getSelectedFixtureUserInput(props)
+        });
+      }
+
+      return state;
     }
   },
 
@@ -84,44 +85,42 @@ module.exports = React.createClass({
 
   children: {
     preview: function() {
-      var props = {
+      var params = {
+        component: this.constructor.getSelectedComponentClass(this.props),
         // Child should re-render whenever fixture changes
         key: JSON.stringify(this.state.fixtureContents)
       };
 
-      return _.merge(props, _.omit(this.state.fixtureContents, 'state'));
+      return _.merge(params, _.omit(this.state.fixtureContents, 'state'));
     }
   },
 
   render: function() {
+    var isFixtureSelected = this.constructor.isFixtureSelected(this.props);
+
     var classes = classNames({
       'component-playground': true,
       'full-screen': this.props.fullScreen
     });
 
-    var homeUrlProps = {
-      fixtureEditor: this.props.fixtureEditor
-    };
-
     return (
       <div className={classes}>
         <div className="header">
-          {this._renderButtons()}
+          {isFixtureSelected ? this._renderButtons() : null}
           <h1>
             <a ref="homeLink"
-               href={stringifyParams(homeUrlProps)}
+               href={stringifyParams({})}
                className="home-link"
                onClick={this.props.router.routeLink}>
               <span className="react">React</span> Component Playground
             </a>
-            {_.isEmpty(this.state.fixtureContents) ? this._renderCosmosPlug()
-                                                   : null}
+            {!isFixtureSelected ? this._renderCosmosPlug() : null}
           </h1>
         </div>
         <div className="fixtures">
           {this._renderFixtures()}
         </div>
-        {this._renderContentFrame()}
+        {isFixtureSelected ? this._renderContentFrame() : null}
       </div>
     );
   },
@@ -135,7 +134,7 @@ module.exports = React.createClass({
 
   _renderFixtures: function() {
     return <ul className="components">
-      {_.map(this.props.fixtures, function(fixtures, componentName) {
+      {_.map(this.props.components, function(component, componentName) {
 
         var classes = classNames({
           'component': true,
@@ -151,7 +150,7 @@ module.exports = React.createClass({
               {componentName}
             </a>
           </p>
-          {this._renderComponentFixtures(componentName, fixtures)}
+          {this._renderComponentFixtures(componentName, component.fixtures)}
         </li>;
 
       }.bind(this))}
@@ -186,8 +185,7 @@ module.exports = React.createClass({
   _renderContentFrame: function() {
     return <div className="content-frame">
       <div ref="previewContainer" className={this._getPreviewClasses()}>
-        {!_.isEmpty(this.state.fixtureContents) ? this.loadChild('preview')
-                                                : null}
+        {this.loadChild('preview')}
       </div>
       {this.props.fixtureEditor ? this._renderFixtureEditor() : null}
     </div>
@@ -209,11 +207,9 @@ module.exports = React.createClass({
   },
 
   _renderButtons: function() {
-    var isFixtureSelected = this.constructor.isFixtureSelected(this.props);
-
     return <ul className="buttons">
       {this._renderFixtureEditorButton()}
-      {isFixtureSelected ? this._renderFullScreenButton() : null}
+      {this._renderFullScreenButton()}
     </ul>;
   },
 
@@ -224,15 +220,10 @@ module.exports = React.createClass({
     });
 
     var fixtureEditorUrlProps = {
-      fixtureEditor: !this.props.fixtureEditor
+      fixtureEditor: !this.props.fixtureEditor,
+      selectedComponent: this.props.selectedComponent,
+      selectedFixture: this.props.selectedFixture
     };
-
-    if (this.constructor.isFixtureSelected(this.props)) {
-      _.extend(fixtureEditorUrlProps, {
-        selectedComponent: this.props.selectedComponent,
-        selectedFixture: this.props.selectedFixture
-      });
-    }
 
     return <li className={classes}>
       <a href={stringifyParams(fixtureEditorUrlProps)}
@@ -303,7 +294,7 @@ module.exports = React.createClass({
 
     try {
       var fixtureContents =
-        this.constructor.getSelectedFixtureContents(this.props);
+          _.cloneDeep(this.constructor.getSelectedFixtureContents(this.props));
 
       if (userInput) {
         _.merge(fixtureContents, JSON.parse(userInput));

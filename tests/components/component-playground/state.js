@@ -4,15 +4,15 @@ var ComponentTree = require('react-component-tree'),
 
 describe('ComponentPlayground component', function() {
   var component,
-      props;
+      params;
 
   function render(extraProps) {
     // Alow tests to extend fixture before rendering
-    _.merge(props, extraProps);
+    _.merge(params, extraProps);
 
     component = ComponentTree.render({
       component: ComponentPlayground,
-      snapshot: props,
+      snapshot: params,
       container: document.createElement('div')
     });
   };
@@ -20,21 +20,27 @@ describe('ComponentPlayground component', function() {
   beforeEach(function() {
     sinon.stub(ComponentTree, 'injectState');
 
-    props = {
-      fixtures: {
+    params = {
+      components: {
         FirstComponent: {
-          'blank state': {
-            myProp: false,
-            state: {
-              somethingHappened: true
+          class: 'FirstComponent',
+          fixtures: {
+            'blank state': {
+              myProp: false,
+              state: {
+                somethingHappened: true
+              }
             }
           }
         },
         SecondComponent: {
-          'simple state': {
-            myProp: true,
-            state: {
-              somethingHappened: false
+          class: 'SecondComponent',
+          fixtures: {
+            'simple state': {
+              myProp: true,
+              state: {
+                somethingHappened: false
+              }
             }
           }
         }
@@ -58,7 +64,7 @@ describe('ComponentPlayground component', function() {
 
     describe('with fixture selected', function() {
       beforeEach(function() {
-        _.extend(props, {
+        _.extend(params, {
           selectedComponent: 'FirstComponent',
           selectedFixture: 'blank state'
         });
@@ -89,7 +95,6 @@ describe('ComponentPlayground component', function() {
               .to.equal(JSON.stringify(fixtureContents, null, 2));
       });
 
-      // TODO: Test this on fixture transition as well
       it('should inject state to preview child', function() {
         render();
 
@@ -125,7 +130,8 @@ describe('ComponentPlayground component', function() {
         });
 
         it('should reset fixture user input', function() {
-          var fixtureContents = props.fixtures.FirstComponent['blank state'];
+          var fixtureContents =
+              params.components.FirstComponent.fixtures['blank state'];
 
           expect(JSON.parse(component.state.fixtureUserInput).myProp)
                 .to.equal(true);
