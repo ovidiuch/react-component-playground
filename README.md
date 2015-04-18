@@ -1,7 +1,7 @@
 # React Component Playground
 [![Build Status](https://travis-ci.org/skidding/react-component-playground.svg?branch=master)](https://travis-ci.org/skidding/react-component-playground) [![Coverage Status](https://coveralls.io/repos/skidding/react-component-playground/badge.svg?branch=master)](https://coveralls.io/r/skidding/react-component-playground?branch=master)
 
-ComponentPlayground provides a minimal frame for loading and testing React
+Minimal frame for loading and testing React
 components in isolation.
 
 Working with ComponentPlayground improves the component design because it
