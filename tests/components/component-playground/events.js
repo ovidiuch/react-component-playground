@@ -20,7 +20,7 @@ describe('ComponentPlayground component', function() {
   };
 
   var triggerChange = function(value) {
-    utils.Simulate.change(component.refs.fixtureEditor.getDOMNode(),
+    utils.Simulate.change(component.refs.editor.getDOMNode(),
                           {target: {value: value}});
   };
 
@@ -99,8 +99,8 @@ describe('ComponentPlayground component', function() {
       describe('router links', function() {
         beforeEach(function() {
           render({
-            selectedComponent: 'SecondComponent',
-            selectedFixture: 'simple state'
+            component: 'SecondComponent',
+            fixture: 'simple state'
           });
         });
 
@@ -118,7 +118,7 @@ describe('ComponentPlayground component', function() {
         });
 
         it('should route link on fixture editor button', function() {
-          utils.Simulate.click(component.refs.fixtureEditorButton.getDOMNode());
+          utils.Simulate.click(component.refs.editorButton.getDOMNode());
         });
 
         it('should route link on full screen button', function() {
@@ -137,9 +137,9 @@ describe('ComponentPlayground component', function() {
               }
             }
           },
-          selectedComponent: 'MyComponent',
-          selectedFixture: 'simple state',
-          fixtureEditor: true,
+          component: 'MyComponent',
+          fixture: 'simple state',
+          editor: true,
           state: {
             fixtureContents: {
               lorem: 'dolor sit'
@@ -206,9 +206,9 @@ describe('ComponentPlayground component', function() {
               }
             }
           },
-          selectedComponent: 'MyComponent',
-          selectedFixture: 'simple state',
-          fixtureEditor: true
+          component: 'MyComponent',
+          fixture: 'simple state',
+          editor: true
         });
 
         render();

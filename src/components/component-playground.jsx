@@ -4,7 +4,7 @@ var _ = require('lodash'),
     React = require('react'),
     classNames = require('classnames'),
     ComponentTree = require('react-component-tree'),
-    stringifyParams = require('react-minimal-router').uri.stringifyParams;
+    stringifyParams = require('react-querystring-router').uri.stringifyParams;
 
 module.exports = React.createClass({
   /**
@@ -18,34 +18,33 @@ module.exports = React.createClass({
 
   propTypes: {
     components: React.PropTypes.object.isRequired,
-    selectedComponent: React.PropTypes.string,
-    selectedFixture: React.PropTypes.string,
-    fixtureEditor: React.PropTypes.bool,
+    component: React.PropTypes.string,
+    fixture: React.PropTypes.string,
+    editor: React.PropTypes.bool,
     fullScreen: React.PropTypes.bool,
     containerClassName: React.PropTypes.string
   },
 
   statics: {
     getExpandedComponents: function(props, alreadyExpanded) {
-      if (!props.selectedComponent ||
-          _.contains(alreadyExpanded, props.selectedComponent)) {
+      if (!props.component || _.contains(alreadyExpanded, props.component)) {
         return alreadyExpanded;
       }
 
-      return alreadyExpanded.concat(props.selectedComponent);
+      return alreadyExpanded.concat(props.component);
     },
 
     isFixtureSelected: function(props) {
-      return props.selectedComponent && props.selectedFixture;
+      return props.component && props.fixture;
     },
 
     getSelectedComponentClass: function(props) {
-      return props.components[props.selectedComponent].class;
+      return props.components[props.component].class;
     },
 
     getSelectedFixtureContents: function(props) {
-      return props.components[props.selectedComponent]
-                  .fixtures[props.selectedFixture];
+      return props.components[props.component]
+                  .fixtures[props.fixture];
     },
 
     getSelectedFixtureUserInput: function(props) {
@@ -74,7 +73,7 @@ module.exports = React.createClass({
 
   getDefaultProps: function() {
     return {
-      fixtureEditor: false,
+      editor: false,
       fullScreen: false
     };
   },
@@ -162,9 +161,9 @@ module.exports = React.createClass({
       {_.map(fixtures, function(props, fixtureName) {
 
         var fixtureProps = {
-          selectedComponent: componentName,
-          selectedFixture: fixtureName,
-          fixtureEditor: this.props.fixtureEditor
+          component: componentName,
+          fixture: fixtureName,
+          editor: this.props.editor
         };
 
         return <li className={this._getFixtureClasses(componentName,
@@ -187,7 +186,7 @@ module.exports = React.createClass({
       <div ref="previewContainer" className={this._getPreviewClasses()}>
         {this.loadChild('preview')}
       </div>
-      {this.props.fixtureEditor ? this._renderFixtureEditor() : null}
+      {this.props.editor ? this._renderFixtureEditor() : null}
     </div>
   },
 
@@ -198,7 +197,7 @@ module.exports = React.createClass({
     });
 
     return <div className="fixture-editor-outer">
-      <textarea ref="fixtureEditor"
+      <textarea ref="editor"
                 className={editorClasses}
                 value={this.state.fixtureUserInput}
                 onChange={this.onFixtureChange}>
@@ -216,26 +215,26 @@ module.exports = React.createClass({
   _renderFixtureEditorButton: function() {
     var classes = classNames({
       'fixture-editor-button': true,
-      'selected-button': this.props.fixtureEditor
+      'selected-button': this.props.editor
     });
 
-    var fixtureEditorUrlProps = {
-      fixtureEditor: !this.props.fixtureEditor,
-      selectedComponent: this.props.selectedComponent,
-      selectedFixture: this.props.selectedFixture
+    var editorUrlProps = {
+      editor: !this.props.editor,
+      component: this.props.component,
+      fixture: this.props.fixture
     };
 
     return <li className={classes}>
-      <a href={stringifyParams(fixtureEditorUrlProps)}
-         ref="fixtureEditorButton"
+      <a href={stringifyParams(editorUrlProps)}
+         ref="editorButton"
          onClick={this.props.router.routeLink}>Editor</a>
     </li>;
   },
 
   _renderFullScreenButton: function() {
     var fullScreenUrl = stringifyParams({
-      selectedComponent: this.props.selectedComponent,
-      selectedFixture: this.props.selectedFixture,
+      component: this.props.component,
+      fixture: this.props.fixture,
       fullScreen: true
     });
 
@@ -253,8 +252,8 @@ module.exports = React.createClass({
   },
 
   componentWillReceiveProps: function(nextProps) {
-    if (nextProps.selectedComponent !== this.props.selectedComponent ||
-        nextProps.selectedFixture !== this.props.selectedFixture) {
+    if (nextProps.component !== this.props.component ||
+        nextProps.fixture !== this.props.fixture) {
       this.setState(this.constructor.getFixtureState(
           nextProps, this.state.expandedComponents));
     }
@@ -264,8 +263,8 @@ module.exports = React.createClass({
     if (this.refs.preview && (
         // Avoid deep comparing the fixture contents when component and/or
         // fixture changed, because it's more expensive
-        this.props.selectedComponent !== prevProps.selectedComponent ||
-        this.props.selectedFixture !== prevProps.selectedFixture ||
+        this.props.component !== prevProps.component ||
+        this.props.fixture !== prevProps.fixture ||
         !_.isEqual(this.state.fixtureContents, prevState.fixtureContents))) {
       this._injectPreviewChildState();
     }
@@ -313,7 +312,7 @@ module.exports = React.createClass({
   _getPreviewClasses: function() {
     var classes = {
       'preview': true,
-      'aside-fixture-editor': this.props.fixtureEditor
+      'aside-fixture-editor': this.props.editor
     };
 
     if (this.props.containerClassName) {
@@ -328,8 +327,8 @@ module.exports = React.createClass({
       'component-fixture': true
     };
 
-    classes['selected'] = componentName === this.props.selectedComponent &&
-                          fixtureName === this.props.selectedFixture;
+    classes['selected'] = componentName === this.props.component &&
+                          fixtureName === this.props.fixture;
 
     return classNames(classes);
   },
