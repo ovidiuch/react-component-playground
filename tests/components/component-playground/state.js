@@ -65,8 +65,8 @@ describe('ComponentPlayground component', function() {
     describe('with fixture selected', function() {
       beforeEach(function() {
         _.extend(params, {
-          selectedComponent: 'FirstComponent',
-          selectedFixture: 'blank state'
+          component: 'FirstComponent',
+          fixture: 'blank state'
         });
       });
 
@@ -112,8 +112,8 @@ describe('ComponentPlayground component', function() {
           });
 
           component.setProps({
-            selectedComponent: 'SecondComponent',
-            selectedFixture: 'simple state'
+            component: 'SecondComponent',
+            fixture: 'simple state'
           });
         });
 

@@ -17,7 +17,7 @@ describe('ComponentPlayground component', function() {
       container: document.createElement('div')
     });
 
-    if (params.selectedComponent) {
+    if (params.component) {
       childParams = component.children.preview.call(component);
     }
   }
@@ -54,8 +54,8 @@ describe('ComponentPlayground component', function() {
 
     it('should render child with selected fixture', function() {
       render({
-        selectedComponent: 'FirstComponent',
-        selectedFixture: 'default state'
+        component: 'FirstComponent',
+        fixture: 'default state'
       });
 
       expect(ComponentTree.loadChild.loadChild).to.have.been.called;
@@ -64,7 +64,7 @@ describe('ComponentPlayground component', function() {
     describe('with fixture contents', function() {
       beforeEach(function() {
         _.assign(params, {
-          selectedComponent: 'FirstComponent',
+          component: 'FirstComponent',
           // Children draw their props from state.fixtureContents. Generating
           // state from props is tested in the state.js suite
           state: {
