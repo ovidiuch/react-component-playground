@@ -4,7 +4,7 @@ var _ = require('lodash'),
     React = require('react'),
     classNames = require('classnames'),
     ComponentTree = require('react-component-tree'),
-    stringifyParams = require('react-minimal-router').uri.stringifyParams;
+    stringifyParams = require('react-querystring-router').uri.stringifyParams;
 
 module.exports = React.createClass({
   /**

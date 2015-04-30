@@ -1,6 +1,6 @@
 var $ = require('jquery'),
     ComponentTree = require('react-component-tree'),
-    parseLocation = require('react-minimal-router').uri.parseLocation,
+    parseLocation = require('react-querystring-router').uri.parseLocation,
     ComponentPlayground =
         require('../../../src/components/component-playground.jsx');
 
