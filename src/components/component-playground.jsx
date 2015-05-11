@@ -47,8 +47,13 @@ module.exports = React.createClass({
                   .fixtures[props.fixture];
     },
 
+    getStringifiedFixtureContents: function(fixtureContents) {
+      return JSON.stringify(fixtureContents, null, 2);
+    },
+
     getSelectedFixtureUserInput: function(props) {
-      return JSON.stringify(this.getSelectedFixtureContents(props), null, 2);
+      return this.getStringifiedFixtureContents(
+          this.getSelectedFixtureContents(props));
     },
 
     getFixtureState: function(props, expandedComponents) {
@@ -200,6 +205,8 @@ module.exports = React.createClass({
       <textarea ref="editor"
                 className={editorClasses}
                 value={this.state.fixtureUserInput}
+                onFocus={this.onEditorFocus}
+                onBlur={this.onEditorBlur}
                 onChange={this.onFixtureChange}>
       </textarea>
     </div>;
@@ -246,6 +253,9 @@ module.exports = React.createClass({
   },
 
   componentDidMount: function() {
+    // TODO: Make interval a configurable prop
+    this._updateEditorInterval = setInterval(this.onUpdateEditorInterval, 400);
+
     if (this.refs.preview) {
       this._injectPreviewChildState();
     }
@@ -270,6 +280,25 @@ module.exports = React.createClass({
     }
   },
 
+  componentWillUnmount: function() {
+    clearInterval(this._updateEditorInterval);
+  },
+
+  onUpdateEditorInterval: function() {
+    if (!this.constructor.isFixtureSelected(this.props) ||
+        // Don't update fixture contents while the user is editing the fixture
+        this.state.isEditorFocused) {
+      return;
+    }
+
+    var snapshot = ComponentTree.serialize(this.refs.preview);
+
+    this.setState({
+      fixtureContents: snapshot,
+      fixtureUserInput: this.constructor.getStringifiedFixtureContents(snapshot)
+    });
+  },
+
   onComponentClick: function(componentName, event) {
     event.preventDefault();
 
@@ -285,6 +314,14 @@ module.exports = React.createClass({
     }
 
     this.setState({expandedComponents: toBeExpanded});
+  },
+
+  onEditorFocus: function(event) {
+    this.setState({isEditorFocused: true});
+  },
+
+  onEditorBlur: function(event) {
+    this.setState({isEditorFocused: false});
   },
 
   onFixtureChange: function(event) {
