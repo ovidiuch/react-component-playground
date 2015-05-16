@@ -6,16 +6,18 @@ var React = require('react/addons'),
 describe('ComponentPlayground component', function() {
   var utils = React.addons.TestUtils,
       component,
+      container,
       params;
 
   function render(extraParams) {
     // Alow tests to extend fixture before rendering
     _.merge(params, extraParams);
 
+    container = document.createElement('div');
     component = ComponentTree.render({
       component: ComponentPlayground,
       snapshot: params,
-      container: document.createElement('div')
+      container: container
     });
   };
 
@@ -226,6 +228,122 @@ describe('ComponentPlayground component', function() {
 
         expect(params.components.MyComponent
                .fixtures['simple state'].nested.nestedProp).to.be.true;
+      });
+    });
+
+    describe('refreshing fixture contents', function() {
+      var timeoutId = 555;
+
+      beforeEach(function() {
+        sinon.stub(window, 'setInterval').returns(timeoutId);
+        sinon.stub(window, 'clearInterval');
+      });
+
+      afterEach(function() {
+        window.setInterval.restore();
+        window.clearInterval.restore();
+      });
+
+      it('should register interval on mount', function() {
+        render();
+
+        var setIntervalArgs = window.setInterval.lastCall.args;
+        expect(setIntervalArgs[0]).to.equal(component.onFixtureUpdate);
+        expect(setIntervalArgs[1]).to.equal(400);
+      });
+
+      it('should clear interval on unmount', function() {
+        render();
+        React.unmountComponentAtNode(container);
+
+        expect(window.clearInterval).to.have.been.calledWith(timeoutId);
+      });
+
+      describe("on callback", function() {
+        var childSnapshot = {},
+            stringifiedChildSnapshot = '{}';
+
+        beforeEach(function() {
+          sinon.stub(ComponentTree, 'serialize').returns(childSnapshot);
+          sinon.stub(JSON, 'stringify').returns(stringifiedChildSnapshot);
+
+          params.components = {
+            FirstComponent: {},
+            SecondComponent: {
+              fixtures: {
+                'simple state': {}
+              }
+            }
+          };
+        });
+
+        afterEach(function() {
+          ComponentTree.serialize.restore();
+          JSON.stringify.restore();
+        });
+
+        it('should not set state when fixture is not selected', function() {
+          render();
+
+          sinon.spy(component, 'setState');
+          component.onFixtureUpdate();
+
+          expect(component.setState).to.not.have.been.called;
+        });
+
+        describe("with fixture selected", function() {
+          beforeEach(function() {
+            params.component = 'SecondComponent';
+            params.fixture = 'simple state';
+          });
+
+          it('should not set state when editor is focused', function() {
+            render({
+              state: {
+                isEditorFocused: true
+              }
+            });
+
+            sinon.spy(component, 'setState');
+            component.onFixtureUpdate();
+
+            expect(component.setState).to.not.have.been.called;
+          });
+
+          describe("with editor blurred", function() {
+            var fakeChild = {};
+
+            beforeEach(function() {
+              render();
+
+              // Children are not rendered in this test suite
+              component.refs.preview = fakeChild;
+
+              sinon.spy(component, 'setState');
+              component.onFixtureUpdate();
+            });
+
+            it('should serialize preview child', function() {
+              expect(ComponentTree.serialize)
+                    .to.have.been.calledWith(fakeChild);
+            });
+
+            it('should set state with child snapshot', function() {
+              var stateSet = component.setState.lastCall.args[0];
+              expect(stateSet.fixtureContents).to.equal(childSnapshot);
+            });
+
+            it('should stringify preview child snapshot', function() {
+              expect(JSON.stringify).to.have.been.calledWith(childSnapshot);
+            });
+
+            it('should set state with stringified child snapshot', function() {
+              var stateSet = component.setState.lastCall.args[0];
+              expect(stateSet.fixtureUserInput)
+                    .to.equal(stringifiedChildSnapshot);
+            });
+          });
+        });
       });
     });
   });

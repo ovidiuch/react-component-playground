@@ -254,7 +254,7 @@ module.exports = React.createClass({
 
   componentDidMount: function() {
     // TODO: Make interval a configurable prop
-    this._updateEditorInterval = setInterval(this.onUpdateEditorInterval, 400);
+    this._fixtureUpdateInterval = setInterval(this.onFixtureUpdate, 400);
 
     if (this.refs.preview) {
       this._injectPreviewChildState();
@@ -290,10 +290,10 @@ module.exports = React.createClass({
   },
 
   componentWillUnmount: function() {
-    clearInterval(this._updateEditorInterval);
+    clearInterval(this._fixtureUpdateInterval);
   },
 
-  onUpdateEditorInterval: function() {
+  onFixtureUpdate: function() {
     if (!this.constructor.isFixtureSelected(this.props) ||
         // Don't update fixture contents while the user is editing the fixture
         this.state.isEditorFocused) {
