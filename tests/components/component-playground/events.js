@@ -101,6 +101,22 @@ describe('ComponentPlayground component', function() {
         expect(expandedComponents[0]).to.equal('FirstComponent');
       });
 
+      it('should focus on editor on fixture click', function() {
+        render({
+          component: 'SecondComponent',
+          fixture: 'simple state',
+          editor: true
+        });
+
+        var editorNode = component.refs.editor.getDOMNode();
+        sinon.spy(editorNode, 'focus');
+
+        utils.Simulate.click(
+            component.refs['SecondComponentsimple stateButton'].getDOMNode());
+
+        expect(editorNode.focus).to.have.been.called;
+      });
+
       describe('router links', function() {
         beforeEach(function() {
           render({
