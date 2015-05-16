@@ -286,21 +286,6 @@ module.exports = React.createClass({
     clearInterval(this._fixtureUpdateInterval);
   },
 
-  onFixtureUpdate: function() {
-    if (!this.constructor.isFixtureSelected(this.props) ||
-        // Don't update fixture contents while the user is editing the fixture
-        this.state.isEditorFocused) {
-      return;
-    }
-
-    var snapshot = ComponentTree.serialize(this.refs.preview);
-
-    this.setState({
-      fixtureContents: snapshot,
-      fixtureUserInput: this.constructor.getStringifiedFixtureContents(snapshot)
-    });
-  },
-
   onComponentClick: function(componentName, event) {
     event.preventDefault();
 
@@ -335,6 +320,23 @@ module.exports = React.createClass({
 
   onEditorBlur: function(event) {
     this.setState({isEditorFocused: false});
+  },
+
+  onFixtureUpdate: function() {
+    if (!this.constructor.isFixtureSelected(this.props) ||
+        // Don't update fixture contents while the user is editing the fixture
+        this.state.isEditorFocused) {
+      return;
+    }
+
+    var snapshot = ComponentTree.serialize(this.refs.preview);
+
+    this.setState({
+      fixtureContents: snapshot,
+      fixtureUserInput:
+          this.constructor.getStringifiedFixtureContents(snapshot),
+      isFixtureUserInputValid: true
+    });
   },
 
   onFixtureChange: function(event) {

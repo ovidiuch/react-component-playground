@@ -354,12 +354,17 @@ describe('ComponentPlayground component', function() {
               component.onFixtureUpdate();
             });
 
+            it('should mark user input state as valid', function() {
+              var stateSet = component.setState.lastCall.args[0];
+              expect(stateSet.isFixtureUserInputValid).to.equal(true);
+            });
+
             it('should serialize preview child', function() {
               expect(ComponentTree.serialize)
                     .to.have.been.calledWith(fakeChild);
             });
 
-            it('should set state with child snapshot', function() {
+            it('should update child snapshot state', function() {
               var stateSet = component.setState.lastCall.args[0];
               expect(stateSet.fixtureContents).to.equal(childSnapshot);
             });
@@ -368,7 +373,7 @@ describe('ComponentPlayground component', function() {
               expect(JSON.stringify).to.have.been.calledWith(childSnapshot);
             });
 
-            it('should set state with stringified child snapshot', function() {
+            it('should update stringified child snapshot state', function() {
               var stateSet = component.setState.lastCall.args[0];
               expect(stateSet.fixtureUserInput)
                     .to.equal(stringifiedChildSnapshot);
