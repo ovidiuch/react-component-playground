@@ -21,9 +21,12 @@ describe('ComponentPlayground component', function() {
     });
   };
 
+  var triggerEditorEvent = function(event, eventData) {
+    utils.Simulate[event](component.refs.editor.getDOMNode(), eventData);
+  };
+
   var triggerEditorChange = function(value) {
-    utils.Simulate.change(component.refs.editor.getDOMNode(),
-                          {target: {value: value}});
+    triggerEditorEvent('change', {target: {value: value}});
   };
 
   beforeEach(function() {
@@ -148,6 +151,18 @@ describe('ComponentPlayground component', function() {
             }
           }
         });
+      });
+
+      it('should set state flag on editor focus', function() {
+        triggerEditorEvent('focus');
+
+        expect(component.state.isEditorFocused).to.equal(true);
+      });
+
+      it('should unset state flag on editor blur', function() {
+        triggerEditorEvent('blur');
+
+        expect(component.state.isEditorFocused).to.equal(false);
       });
 
       it('should update fixture user input on change', function() {
