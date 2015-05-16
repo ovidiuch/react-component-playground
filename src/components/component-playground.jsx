@@ -51,11 +51,6 @@ module.exports = React.createClass({
       return JSON.stringify(fixtureContents, null, 2);
     },
 
-    getSelectedFixtureUserInput: function(props) {
-      return this.getStringifiedFixtureContents(
-          this.getSelectedFixtureContents(props));
-    },
-
     getFixtureState: function(props, expandedComponents) {
       var state = {
         expandedComponents:
@@ -66,9 +61,11 @@ module.exports = React.createClass({
       };
 
       if (this.isFixtureSelected(props)) {
+        var fixtureContents = this.getSelectedFixtureContents(props);
+
         _.assign(state, {
-          fixtureContents: this.getSelectedFixtureContents(props),
-          fixtureUserInput: this.getSelectedFixtureUserInput(props)
+          fixtureContents: fixtureContents,
+          fixtureUserInput: this.getStringifiedFixtureContents(fixtureContents)
         });
       }
 
