@@ -259,7 +259,7 @@ describe('ComponentPlayground component', function() {
         expect(window.clearInterval).to.have.been.calledWith(timeoutId);
       });
 
-      describe("on callback", function() {
+      describe('on callback', function() {
         var childSnapshot = {},
             stringifiedChildSnapshot = '{}';
 
@@ -291,7 +291,7 @@ describe('ComponentPlayground component', function() {
           expect(component.setState).to.not.have.been.called;
         });
 
-        describe("with fixture selected", function() {
+        describe('with fixture selected', function() {
           beforeEach(function() {
             params.component = 'SecondComponent';
             params.fixture = 'simple state';
@@ -310,7 +310,7 @@ describe('ComponentPlayground component', function() {
             expect(component.setState).to.not.have.been.called;
           });
 
-          describe("with editor blurred", function() {
+          describe('with editor blurred', function() {
             var fakeChild = {};
 
             beforeEach(function() {
