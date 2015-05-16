@@ -19,7 +19,7 @@ describe('ComponentPlayground component', function() {
     });
   };
 
-  var triggerChange = function(value) {
+  var triggerEditorChange = function(value) {
     utils.Simulate.change(component.refs.editor.getDOMNode(),
                           {target: {value: value}});
   };
@@ -149,43 +149,43 @@ describe('ComponentPlayground component', function() {
       });
 
       it('should update fixture user input on change', function() {
-        triggerChange('lorem ipsum');
+        triggerEditorChange('lorem ipsum');
 
         expect(component.state.fixtureUserInput).to.equal('lorem ipsum');
       });
 
       it('should update fixture contents on valid change', function() {
-        triggerChange('{"lorem": "ipsum"}');
+        triggerEditorChange('{"lorem": "ipsum"}');
 
         expect(component.state.fixtureContents.lorem).to.equal('ipsum');
       });
 
       it('should not update fixture contents on invalid change', function() {
-        triggerChange('lorem ipsum');
+        triggerEditorChange('lorem ipsum');
 
         expect(component.state.fixtureContents.lorem).to.equal('dolor sit');
       });
 
       it('should empty fixture contents on empty input', function() {
-        triggerChange('');
+        triggerEditorChange('');
 
         expect(component.state.fixtureContents).to.deep.equal({});
       });
 
       it('should call console.error on invalid change', function() {
-        triggerChange('lorem ipsum');
+        triggerEditorChange('lorem ipsum');
 
         expect(console.error.lastCall.args[0]).to.be.an.instanceof(Error);
       });
 
       it('should mark valid change in state', function() {
-        triggerChange('{"lorem": "ipsum"}');
+        triggerEditorChange('{"lorem": "ipsum"}');
 
         expect(component.state.isFixtureUserInputValid).to.equal(true);
       });
 
       it('should mark invalid change in state', function() {
-        triggerChange('lorem ipsum');
+        triggerEditorChange('lorem ipsum');
 
         expect(component.state.isFixtureUserInputValid).to.equal(false);
       });
@@ -215,14 +215,14 @@ describe('ComponentPlayground component', function() {
       });
 
       it('should extend fixture contents with user input', function() {
-        triggerChange('{"customProp": true}');
+        triggerEditorChange('{"customProp": true}');
 
         expect(component.state.fixtureContents.customProp).to.equal(true);
         expect(component.state.fixtureContents.defaultProp).to.equal(true);
       });
 
       it('should not alter the original fixture contents', function() {
-        triggerChange('{"nested": {"nestedProp": false}}');
+        triggerEditorChange('{"nested": {"nestedProp": false}}');
 
         expect(params.components.MyComponent
                .fixtures['simple state'].nested.nestedProp).to.be.true;
