@@ -65,6 +65,7 @@ describe('ComponentPlayground component', function() {
       beforeEach(function() {
         _.assign(params, {
           component: 'FirstComponent',
+          fixture: 'default state',
           // Children draw their props from state.fixtureContents. Generating
           // state from props is tested in the state.js suite
           state: {
@@ -74,7 +75,8 @@ describe('ComponentPlayground component', function() {
               state: {
                 paused: true
               }
-            }
+            },
+            fixtureChange: 155
           }
         });
       });
@@ -101,13 +103,14 @@ describe('ComponentPlayground component', function() {
         expect(childParams.state).to.be.undefined;
       });
 
-      it('should use fixture contents as key for preview child', function() {
+      it('should use fixture component, name and change id as key for ' +
+         'preview child', function() {
         render();
 
-        var fixtureContents = component.state.fixtureContents,
-            stringifiedFixtureContents = JSON.stringify(fixtureContents);
+        var fixtureChange = component.state.fixtureChange;
 
-        expect(childParams.key).to.equal(stringifiedFixtureContents);
+        expect(childParams.key).to.equal(
+              'FirstComponent-default state-' + fixtureChange);
       });
 
       it('should clone fixture contents sent to child', function() {

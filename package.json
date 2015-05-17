@@ -1,6 +1,6 @@
 {
   "name": "react-component-playground",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Isolated loader for React components",
   "main": "build/bundle.js",
   "repository": {

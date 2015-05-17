@@ -6,22 +6,27 @@ var React = require('react/addons'),
 describe('ComponentPlayground component', function() {
   var utils = React.addons.TestUtils,
       component,
+      container,
       params;
 
   function render(extraParams) {
     // Alow tests to extend fixture before rendering
     _.merge(params, extraParams);
 
+    container = document.createElement('div');
     component = ComponentTree.render({
       component: ComponentPlayground,
       snapshot: params,
-      container: document.createElement('div')
+      container: container
     });
   };
 
-  var triggerChange = function(value) {
-    utils.Simulate.change(component.refs.editor.getDOMNode(),
-                          {target: {value: value}});
+  var triggerEditorEvent = function(event, eventData) {
+    utils.Simulate[event](component.refs.editor.getDOMNode(), eventData);
+  };
+
+  var triggerEditorChange = function(value) {
+    triggerEditorEvent('change', {target: {value: value}});
   };
 
   beforeEach(function() {
@@ -33,6 +38,7 @@ describe('ComponentPlayground component', function() {
     params = {
       components: {},
       router: {
+        goTo: sinon.spy(),
         routeLink: sinon.spy()
       }
     };
@@ -51,7 +57,8 @@ describe('ComponentPlayground component', function() {
           FirstComponent: {},
           SecondComponent: {
             fixtures: {
-              'simple state': {}
+              'simple state': {},
+              'complex state': {}
             }
           }
         };
@@ -96,6 +103,22 @@ describe('ComponentPlayground component', function() {
         expect(expandedComponents[0]).to.equal('FirstComponent');
       });
 
+      it('should focus on editor on fixture click', function() {
+        render({
+          component: 'SecondComponent',
+          fixture: 'simple state',
+          editor: true
+        });
+
+        var editorNode = component.refs.editor.getDOMNode();
+        sinon.spy(editorNode, 'focus');
+
+        utils.Simulate.click(
+            component.refs['SecondComponentsimple stateButton'].getDOMNode());
+
+        expect(editorNode.focus).to.have.been.called;
+      });
+
       describe('router links', function() {
         beforeEach(function() {
           render({
@@ -112,17 +135,64 @@ describe('ComponentPlayground component', function() {
           utils.Simulate.click(component.refs.homeLink.getDOMNode());
         });
 
-        it('should route link on component fixture button', function() {
-          utils.Simulate.click(
-              component.refs['SecondComponentsimple stateButton'].getDOMNode());
-        });
-
         it('should route link on fixture editor button', function() {
           utils.Simulate.click(component.refs.editorButton.getDOMNode());
         });
 
         it('should route link on full screen button', function() {
           utils.Simulate.click(component.refs.fullScreenButton.getDOMNode());
+        });
+      });
+
+      describe('on fixture button click', function() {
+        beforeEach(function() {
+          render({
+            component: 'SecondComponent',
+            fixture: 'simple state',
+            state: {
+              fixtureChange: 10
+            }
+          });
+        });
+
+        it('should route link on new fixture', function() {
+          utils.Simulate.click(
+              component.refs['SecondComponentcomplex stateButton']
+                       .getDOMNode());
+
+          expect(params.router.goTo).to.have.been.called;
+        });
+
+        describe('on already selected fixture', function() {
+          var stateSet;
+
+          beforeEach(function() {
+            sinon.spy(component, 'setState');
+
+            utils.Simulate.click(
+                component.refs['SecondComponentsimple stateButton']
+                         .getDOMNode());
+
+            stateSet = component.setState.lastCall.args[0];
+          });
+
+          it('should not route link', function() {
+            expect(params.router.goTo).to.not.have.been.called;
+          });
+
+          it('should reset state', function() {
+            expect(stateSet.expandedComponents.length).to.equal(1);
+            expect(stateSet.expandedComponents[0]).to.equal('SecondComponent');
+            expect(stateSet.fixtureContents).to.equal(
+                params.components.SecondComponent.fixtures['simple state']);
+            expect(stateSet.fixtureUserInput).to.equal('{}');
+            expect(stateSet.isFixtureUserInputValid).to.equal(true);
+          });
+
+          it('should bump fixture change', function() {
+            expect(stateSet.fixtureChange)
+                  .to.equal(params.state.fixtureChange + 1);
+          });
         });
       });
     });
@@ -143,51 +213,76 @@ describe('ComponentPlayground component', function() {
           state: {
             fixtureContents: {
               lorem: 'dolor sit'
-            }
+            },
+            fixtureChange: 5
           }
         });
       });
 
+      it('should set state flag on editor focus', function() {
+        triggerEditorEvent('focus');
+
+        expect(component.state.isEditorFocused).to.equal(true);
+      });
+
+      it('should unset state flag on editor blur', function() {
+        triggerEditorEvent('blur');
+
+        expect(component.state.isEditorFocused).to.equal(false);
+      });
+
       it('should update fixture user input on change', function() {
-        triggerChange('lorem ipsum');
+        triggerEditorChange('lorem ipsum');
 
         expect(component.state.fixtureUserInput).to.equal('lorem ipsum');
       });
 
-      it('should update fixture contents on valid change', function() {
-        triggerChange('{"lorem": "ipsum"}');
-
-        expect(component.state.fixtureContents.lorem).to.equal('ipsum');
-      });
-
-      it('should not update fixture contents on invalid change', function() {
-        triggerChange('lorem ipsum');
-
-        expect(component.state.fixtureContents.lorem).to.equal('dolor sit');
-      });
-
       it('should empty fixture contents on empty input', function() {
-        triggerChange('');
+        triggerEditorChange('');
 
         expect(component.state.fixtureContents).to.deep.equal({});
       });
 
-      it('should call console.error on invalid change', function() {
-        triggerChange('lorem ipsum');
+      describe('on valid change', function() {
+        beforeEach(function() {
+          triggerEditorChange('{"lorem": "ipsum"}');
+        });
 
-        expect(console.error.lastCall.args[0]).to.be.an.instanceof(Error);
+        it('should update fixture contents', function() {
+          expect(component.state.fixtureContents.lorem).to.equal('ipsum');
+        });
+
+        it('should mark valid change in state', function() {
+          expect(component.state.isFixtureUserInputValid).to.equal(true);
+        });
+
+        it('should bump fixture change counter', function() {
+          expect(component.state.fixtureChange)
+                .to.equal(params.state.fixtureChange + 1);
+        });
       });
 
-      it('should mark valid change in state', function() {
-        triggerChange('{"lorem": "ipsum"}');
+      describe('on invalid change', function() {
+        beforeEach(function() {
+          triggerEditorChange('lorem ipsum');
+        });
 
-        expect(component.state.isFixtureUserInputValid).to.equal(true);
-      });
+        it('should not update fixture contents', function() {
+          expect(component.state.fixtureContents.lorem).to.equal('dolor sit');
+        });
 
-      it('should mark invalid change in state', function() {
-        triggerChange('lorem ipsum');
+        it('should call console.error', function() {
+          expect(console.error.lastCall.args[0]).to.be.an.instanceof(Error);
+        });
 
-        expect(component.state.isFixtureUserInputValid).to.equal(false);
+        it('should mark invalid change in state', function() {
+          expect(component.state.isFixtureUserInputValid).to.equal(false);
+        });
+
+        it('should not bump fixture change counter', function() {
+          expect(component.state.fixtureChange)
+                .to.equal(params.state.fixtureChange);
+        });
       });
     });
 
@@ -199,6 +294,9 @@ describe('ComponentPlayground component', function() {
               fixtures: {
                 'simple state': {
                   defaultProp: true,
+                  unserializableProp: function() {
+                    // noop
+                  },
                   nested: {
                     nestedProp: true
                   }
@@ -214,18 +312,150 @@ describe('ComponentPlayground component', function() {
         render();
       });
 
-      it('should extend fixture contents with user input', function() {
-        triggerChange('{"customProp": true}');
+      it('should extend unserializable fixture contents with user input',
+         function() {
+        triggerEditorChange('{"customProp": true}');
 
         expect(component.state.fixtureContents.customProp).to.equal(true);
-        expect(component.state.fixtureContents.defaultProp).to.equal(true);
+        expect(component.state.fixtureContents.unserializableProp).to.equal(
+            params.components.MyComponent.fixtures['simple state']
+                                         .unserializableProp);
+      });
+
+      it('should not extend serializable fixture contents with user input',
+         function() {
+        triggerEditorChange('{"customProp": true}');
+
+        expect(component.state.fixtureContents.customProp).to.equal(true);
+        expect(component.state.fixtureContents.defaultProp).to.equal(undefined);
       });
 
       it('should not alter the original fixture contents', function() {
-        triggerChange('{"nested": {"nestedProp": false}}');
+        triggerEditorChange('{"nested": {"nestedProp": false}}');
 
         expect(params.components.MyComponent
                .fixtures['simple state'].nested.nestedProp).to.be.true;
+      });
+    });
+
+    describe('refreshing fixture contents', function() {
+      var timeoutId = 555;
+
+      beforeEach(function() {
+        sinon.stub(window, 'setInterval').returns(timeoutId);
+        sinon.stub(window, 'clearInterval');
+      });
+
+      afterEach(function() {
+        window.setInterval.restore();
+        window.clearInterval.restore();
+      });
+
+      it('should register interval on mount', function() {
+        render();
+
+        var setIntervalArgs = window.setInterval.lastCall.args;
+        expect(setIntervalArgs[0]).to.equal(component.onFixtureUpdate);
+        expect(setIntervalArgs[1]).to.equal(100);
+      });
+
+      it('should clear interval on unmount', function() {
+        render();
+        React.unmountComponentAtNode(container);
+
+        expect(window.clearInterval).to.have.been.calledWith(timeoutId);
+      });
+
+      describe('on callback', function() {
+        var childSnapshot = {},
+            stringifiedChildSnapshot = '{}';
+
+        beforeEach(function() {
+          sinon.stub(ComponentTree, 'serialize').returns(childSnapshot);
+          sinon.stub(JSON, 'stringify').returns(stringifiedChildSnapshot);
+
+          params.components = {
+            FirstComponent: {},
+            SecondComponent: {
+              fixtures: {
+                'simple state': {}
+              }
+            }
+          };
+        });
+
+        afterEach(function() {
+          ComponentTree.serialize.restore();
+          JSON.stringify.restore();
+        });
+
+        it('should not set state when fixture is not selected', function() {
+          render();
+
+          sinon.spy(component, 'setState');
+          component.onFixtureUpdate();
+
+          expect(component.setState).to.not.have.been.called;
+        });
+
+        describe('with fixture selected', function() {
+          beforeEach(function() {
+            params.component = 'SecondComponent';
+            params.fixture = 'simple state';
+          });
+
+          it('should not set state when editor is focused', function() {
+            render({
+              state: {
+                isEditorFocused: true
+              }
+            });
+
+            sinon.spy(component, 'setState');
+            component.onFixtureUpdate();
+
+            expect(component.setState).to.not.have.been.called;
+          });
+
+          describe('with editor blurred', function() {
+            var fakeChild = {};
+
+            beforeEach(function() {
+              render();
+
+              // Children are not rendered in this test suite
+              component.refs.preview = fakeChild;
+
+              sinon.spy(component, 'setState');
+              component.onFixtureUpdate();
+            });
+
+            it('should mark user input state as valid', function() {
+              var stateSet = component.setState.lastCall.args[0];
+              expect(stateSet.isFixtureUserInputValid).to.equal(true);
+            });
+
+            it('should serialize preview child', function() {
+              expect(ComponentTree.serialize)
+                    .to.have.been.calledWith(fakeChild);
+            });
+
+            it('should update child snapshot state', function() {
+              var stateSet = component.setState.lastCall.args[0];
+              expect(stateSet.fixtureContents).to.equal(childSnapshot);
+            });
+
+            it('should stringify preview child snapshot', function() {
+              expect(JSON.stringify).to.have.been.calledWith(childSnapshot);
+            });
+
+            it('should update stringified child snapshot state', function() {
+              var stateSet = component.setState.lastCall.args[0];
+              expect(stateSet.fixtureUserInput)
+                    .to.equal(stringifiedChildSnapshot);
+            });
+          });
+        });
       });
     });
   });
