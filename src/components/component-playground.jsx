@@ -38,6 +38,11 @@ module.exports = React.createClass({
       return props.component && props.fixture;
     },
 
+    didFixtureChange: function(prevProps, nextProps) {
+      return prevProps.component !== nextProps.component ||
+             prevProps.fixture !== nextProps.fixture;
+    },
+
     getSelectedComponentClass: function(props) {
       return props.components[props.component].class;
     },
@@ -260,21 +265,17 @@ module.exports = React.createClass({
   },
 
   componentWillReceiveProps: function(nextProps) {
-    if (nextProps.component !== this.props.component ||
-        nextProps.fixture !== this.props.fixture) {
+    if (this.constructor.didFixtureChange(this.props, nextProps)) {
       this.setState(this.constructor.getFixtureState(
           nextProps, this.state.expandedComponents));
     }
   },
 
   componentDidUpdate: function(prevProps, prevState) {
-    var fixtureChanged = this.props.component !== prevProps.component ||
-                         this.props.fixture !== prevProps.fixture;
-
     if (this.refs.preview && (
         // Avoid deep comparing the fixture contents when component and/or
         // fixture changed, because it's more expensive
-        fixtureChanged ||
+        this.constructor.didFixtureChange(prevProps, this.props) ||
         !_.isEqual(this.state.fixtureContents, prevState.fixtureContents))) {
       this._injectPreviewChildState();
     }
