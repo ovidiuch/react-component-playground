@@ -167,11 +167,10 @@ module.exports = React.createClass({
     return <ul className="component-fixtures">
       {_.map(fixtures, function(props, fixtureName) {
 
-        var fixtureProps = {
+        var fixtureProps = this._extendFixtureRoute({
           component: componentName,
-          fixture: fixtureName,
-          editor: this.props.editor
-        };
+          fixture: fixtureName
+        });
 
         return <li className={this._getFixtureClasses(componentName,
                                                       fixtureName)}
@@ -227,11 +226,9 @@ module.exports = React.createClass({
       'selected-button': this.props.editor
     });
 
-    var editorUrlProps = {
-      editor: !this.props.editor,
-      component: this.props.component,
-      fixture: this.props.fixture
-    };
+    var editorUrlProps = this._extendFixtureRoute({
+      editor: !this.props.editor
+    });
 
     return <li className={classes}>
       <a href={stringifyParams(editorUrlProps)}
@@ -241,14 +238,13 @@ module.exports = React.createClass({
   },
 
   _renderFullScreenButton: function() {
-    var fullScreenUrl = stringifyParams({
-      component: this.props.component,
-      fixture: this.props.fixture,
-      fullScreen: true
+    var fullScreenProps = this._extendFixtureRoute({
+      fullScreen: true,
+      editor: false
     });
 
     return <li className="full-screen-button">
-      <a href={fullScreenUrl}
+      <a href={stringifyParams(fullScreenProps)}
          ref="fullScreenButton"
          onClick={this.props.router.routeLink}>Fullscreen</a>
     </li>;
@@ -385,6 +381,23 @@ module.exports = React.createClass({
                           fixtureName === this.props.fixture;
 
     return classNames(classes);
+  },
+
+  _extendFixtureRoute: function(newProps) {
+    var currentProps = {
+      component: this.props.component,
+      fixture: this.props.fixture,
+      editor: this.props.editor,
+      fullScreen: this.props.fullScreen
+    };
+
+    var defaultProps = this.constructor.getDefaultProps(),
+        props = _.assign(_.omit(currentProps, _.keys(newProps)), newProps);
+
+    // No need to include props with default values
+    return _.omit(props, function(value, key) {
+      return value === defaultProps[key];
+    });
   },
 
   _focusOnEditor: function() {
