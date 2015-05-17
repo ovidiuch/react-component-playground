@@ -38,6 +38,7 @@ describe('ComponentPlayground component', function() {
     params = {
       components: {},
       router: {
+        goTo: sinon.spy(),
         routeLink: sinon.spy()
       }
     };
@@ -56,7 +57,8 @@ describe('ComponentPlayground component', function() {
           FirstComponent: {},
           SecondComponent: {
             fixtures: {
-              'simple state': {}
+              'simple state': {},
+              'complex state': {}
             }
           }
         };
@@ -133,17 +135,64 @@ describe('ComponentPlayground component', function() {
           utils.Simulate.click(component.refs.homeLink.getDOMNode());
         });
 
-        it('should route link on component fixture button', function() {
-          utils.Simulate.click(
-              component.refs['SecondComponentsimple stateButton'].getDOMNode());
-        });
-
         it('should route link on fixture editor button', function() {
           utils.Simulate.click(component.refs.editorButton.getDOMNode());
         });
 
         it('should route link on full screen button', function() {
           utils.Simulate.click(component.refs.fullScreenButton.getDOMNode());
+        });
+      });
+
+      describe('on fixture button click', function() {
+        beforeEach(function() {
+          render({
+            component: 'SecondComponent',
+            fixture: 'simple state',
+            state: {
+              fixtureChange: 10
+            }
+          });
+        });
+
+        it('should route link on new fixture', function() {
+          utils.Simulate.click(
+              component.refs['SecondComponentcomplex stateButton']
+                       .getDOMNode());
+
+          expect(params.router.goTo).to.have.been.called;
+        });
+
+        describe('on already selected fixture', function() {
+          var stateSet;
+
+          beforeEach(function() {
+            sinon.spy(component, 'setState');
+
+            utils.Simulate.click(
+                component.refs['SecondComponentsimple stateButton']
+                         .getDOMNode());
+
+            stateSet = component.setState.lastCall.args[0];
+          });
+
+          it('should not route link', function() {
+            expect(params.router.goTo).to.not.have.been.called;
+          });
+
+          it('should reset state', function() {
+            expect(stateSet.expandedComponents.length).to.equal(1);
+            expect(stateSet.expandedComponents[0]).to.equal('SecondComponent');
+            expect(stateSet.fixtureContents).to.equal(
+                params.components.SecondComponent.fixtures['simple state']);
+            expect(stateSet.fixtureUserInput).to.equal('{}');
+            expect(stateSet.isFixtureUserInputValid).to.equal(true);
+          });
+
+          it('should bump fixture change', function() {
+            expect(stateSet.fixtureChange)
+                  .to.equal(params.state.fixtureChange + 1);
+          });
         });
       });
     });
