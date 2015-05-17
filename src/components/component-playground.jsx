@@ -81,7 +81,12 @@ module.exports = React.createClass({
   },
 
   getInitialState: function() {
-    return this.constructor.getFixtureState(this.props, []);
+    var defaultState = {
+      isEditorFocused: false
+    };
+
+    return _.assign(defaultState,
+                    this.constructor.getFixtureState(this.props, []));
   },
 
   children: {
