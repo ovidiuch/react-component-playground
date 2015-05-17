@@ -194,7 +194,7 @@ describe('ComponentPlayground component', function() {
         expect(component.state.fixtureContents).to.deep.equal({});
       });
 
-      describe("on valid change", function() {
+      describe('on valid change', function() {
         beforeEach(function() {
           triggerEditorChange('{"lorem": "ipsum"}');
         });
@@ -213,7 +213,7 @@ describe('ComponentPlayground component', function() {
         });
       });
 
-      describe("on invalid change", function() {
+      describe('on invalid change', function() {
         beforeEach(function() {
           triggerEditorChange('lorem ipsum');
         });
