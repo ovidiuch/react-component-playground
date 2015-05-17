@@ -361,8 +361,15 @@ module.exports = React.createClass({
         newState = {fixtureUserInput: userInput};
 
     try {
+      var originalFixtureContents =
+          this.constructor.getSelectedFixtureContents(this.props);
+
+      // We only want to extend Function props because they can't be serialized
+      // and they are not part of the editor's contents
       var fixtureContents =
-          _.cloneDeep(this.constructor.getSelectedFixtureContents(this.props));
+          _.pick(originalFixtureContents, function(value, key) {
+            return _.isFunction(value);
+          });
 
       if (userInput) {
         _.merge(fixtureContents, JSON.parse(userInput));
