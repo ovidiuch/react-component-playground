@@ -321,7 +321,7 @@ module.exports = React.createClass({
   },
 
   onFixtureUpdate: function() {
-    if (!this.constructor.isFixtureSelected(this.props) ||
+    if (!this.refs.preview ||
         // Don't update fixture contents while the user is editing the fixture
         this.state.isEditorFocused) {
       return;
