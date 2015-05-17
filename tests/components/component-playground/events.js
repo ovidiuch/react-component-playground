@@ -280,7 +280,7 @@ describe('ComponentPlayground component', function() {
 
         var setIntervalArgs = window.setInterval.lastCall.args;
         expect(setIntervalArgs[0]).to.equal(component.onFixtureUpdate);
-        expect(setIntervalArgs[1]).to.equal(400);
+        expect(setIntervalArgs[1]).to.equal(100);
       });
 
       it('should clear interval on unmount', function() {

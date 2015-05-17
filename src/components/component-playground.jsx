@@ -257,7 +257,7 @@ module.exports = React.createClass({
 
   componentDidMount: function() {
     // TODO: Make interval a configurable prop
-    this._fixtureUpdateInterval = setInterval(this.onFixtureUpdate, 400);
+    this._fixtureUpdateInterval = setInterval(this.onFixtureUpdate, 100);
 
     if (this.refs.preview) {
       this._injectPreviewChildState();
