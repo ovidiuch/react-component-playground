@@ -147,6 +147,22 @@ describe('ComponentPlayground component', function() {
           expect(args[1].somethingHappened).to.equal(false);
         });
       });
+
+      it('should inject preview state again when fixture changes', function() {
+        render({
+          state: {
+            fixtureChange: 5
+          }
+        });
+        var injectStateCalls = ComponentTree.injectState.callCount;
+
+        component.setState({
+          fixtureChange: 6
+        });
+
+        expect(ComponentTree.injectState.callCount)
+              .to.equal(injectStateCalls + 1);
+      });
     });
   });
 });

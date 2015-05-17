@@ -269,16 +269,30 @@ describe('ComponentPlayground component', function() {
           var element = component.refs.editorButton.getDOMNode(),
               urlProps = getUrlProps(element);
 
-          expect(urlProps.editor).to.equal(false);
+          expect(urlProps.component).to.equal('FirstComponent');
+          expect(urlProps.fixture).to.equal('simple state');
+          // The editor prop is undefined because default values are ignored
+          expect(urlProps.editor).to.equal(undefined);
         });
 
         it('should include fixtor editor in fixture url', function() {
+          render();
+
           var firstFixtureLink = $component.find('.component-fixture a'),
               urlProps = getUrlProps(firstFixtureLink);
 
           expect(urlProps.component).to.equal('FirstComponent');
           expect(urlProps.fixture).to.equal('blank state');
           expect(urlProps.editor).to.equal(true);
+        });
+
+        it('should not include editor prop in full-screen url', function() {
+          render();
+
+          var element = component.refs.fullScreenButton.getDOMNode(),
+              urlProps = getUrlProps(element);
+
+          expect(urlProps.editor).to.equal(undefined);
         });
 
         it('should add invalid class on fixture editor on state flag',
@@ -292,21 +306,6 @@ describe('ComponentPlayground component', function() {
           expect($(component.refs.editor.getDOMNode())
                  .hasClass('invalid-syntax')).to.be.true;
         });
-      });
-
-      it('should generate url for closing editor with fixture', function() {
-        render({
-          component: 'FirstComponent',
-          fixture: 'simple state',
-          editor: true
-        });
-
-        var element = component.refs.editorButton.getDOMNode(),
-            urlProps = getUrlProps(element);
-
-        expect(urlProps.component).to.equal('FirstComponent');
-        expect(urlProps.fixture).to.equal('simple state');
-        expect(urlProps.editor).to.equal(false);
       });
     });
   });

@@ -4,7 +4,8 @@ var _ = require('lodash'),
     React = require('react'),
     classNames = require('classnames'),
     ComponentTree = require('react-component-tree'),
-    stringifyParams = require('react-querystring-router').uri.stringifyParams;
+    stringifyParams = require('react-querystring-router').uri.stringifyParams,
+    parseLocation = require('react-querystring-router').uri.parseLocation;
 
 module.exports = React.createClass({
   /**
@@ -36,6 +37,11 @@ module.exports = React.createClass({
 
     isFixtureSelected: function(props) {
       return props.component && props.fixture;
+    },
+
+    didFixtureChange: function(prevProps, nextProps) {
+      return prevProps.component !== nextProps.component ||
+             prevProps.fixture !== nextProps.fixture;
     },
 
     getSelectedComponentClass: function(props) {
@@ -81,7 +87,13 @@ module.exports = React.createClass({
   },
 
   getInitialState: function() {
-    return this.constructor.getFixtureState(this.props, []);
+    var defaultState = {
+      fixtureChange: 0,
+      isEditorFocused: false
+    };
+
+    return _.assign(defaultState,
+                    this.constructor.getFixtureState(this.props, []));
   },
 
   children: {
@@ -89,7 +101,7 @@ module.exports = React.createClass({
       var params = {
         component: this.constructor.getSelectedComponentClass(this.props),
         // Child should re-render whenever fixture changes
-        key: JSON.stringify(this.state.fixtureContents)
+        key: this._getPreviewComponentKey()
       };
 
       return _.merge(params, _.omit(this.state.fixtureContents, 'state'));
@@ -162,11 +174,10 @@ module.exports = React.createClass({
     return <ul className="component-fixtures">
       {_.map(fixtures, function(props, fixtureName) {
 
-        var fixtureProps = {
+        var fixtureProps = this._extendFixtureRoute({
           component: componentName,
-          fixture: fixtureName,
-          editor: this.props.editor
-        };
+          fixture: fixtureName
+        });
 
         return <li className={this._getFixtureClasses(componentName,
                                                       fixtureName)}
@@ -222,11 +233,9 @@ module.exports = React.createClass({
       'selected-button': this.props.editor
     });
 
-    var editorUrlProps = {
-      editor: !this.props.editor,
-      component: this.props.component,
-      fixture: this.props.fixture
-    };
+    var editorUrlProps = this._extendFixtureRoute({
+      editor: !this.props.editor
+    });
 
     return <li className={classes}>
       <a href={stringifyParams(editorUrlProps)}
@@ -236,14 +245,13 @@ module.exports = React.createClass({
   },
 
   _renderFullScreenButton: function() {
-    var fullScreenUrl = stringifyParams({
-      component: this.props.component,
-      fixture: this.props.fixture,
-      fullScreen: true
+    var fullScreenProps = this._extendFixtureRoute({
+      fullScreen: true,
+      editor: false
     });
 
     return <li className="full-screen-button">
-      <a href={fullScreenUrl}
+      <a href={stringifyParams(fullScreenProps)}
          ref="fullScreenButton"
          onClick={this.props.router.routeLink}>Fullscreen</a>
     </li>;
@@ -251,7 +259,7 @@ module.exports = React.createClass({
 
   componentDidMount: function() {
     // TODO: Make interval a configurable prop
-    this._fixtureUpdateInterval = setInterval(this.onFixtureUpdate, 400);
+    this._fixtureUpdateInterval = setInterval(this.onFixtureUpdate, 100);
 
     if (this.refs.preview) {
       this._injectPreviewChildState();
@@ -259,22 +267,16 @@ module.exports = React.createClass({
   },
 
   componentWillReceiveProps: function(nextProps) {
-    if (nextProps.component !== this.props.component ||
-        nextProps.fixture !== this.props.fixture) {
+    if (this.constructor.didFixtureChange(this.props, nextProps)) {
       this.setState(this.constructor.getFixtureState(
           nextProps, this.state.expandedComponents));
     }
   },
 
   componentDidUpdate: function(prevProps, prevState) {
-    var fixtureChanged = this.props.component !== prevProps.component ||
-                         this.props.fixture !== prevProps.fixture;
-
     if (this.refs.preview && (
-        // Avoid deep comparing the fixture contents when component and/or
-        // fixture changed, because it's more expensive
-        fixtureChanged ||
-        !_.isEqual(this.state.fixtureContents, prevState.fixtureContents))) {
+        this.constructor.didFixtureChange(prevProps, this.props) ||
+        prevState.fixtureChange !== this.state.fixtureChange)) {
       this._injectPreviewChildState();
     }
   },
@@ -301,7 +303,26 @@ module.exports = React.createClass({
   },
 
   onFixtureClick: function(event) {
-    this.props.router.routeLink(event);
+    event.preventDefault();
+
+    var location = event.currentTarget.href,
+        params = parseLocation(location);
+
+    if (this.constructor.didFixtureChange(this.props, params)) {
+      this.props.router.goTo(location);
+    } else {
+      // This happens when we want to reset a fixture to its original state by
+      // clicking on the fixture button while already selected
+      var originalState =
+          this.constructor.getFixtureState(this.props,
+                                           this.state.expandedComponents);
+
+      // We also need to bump fixtureChange to trigger a key change for the
+      // preview child, because the component and fixture names didn't change
+      this.setState(_.assign(originalState, {
+        fixtureChange: this.state.fixtureChange + 1
+      }));
+    }
 
     // Focus on the editor when changing fixture, to prevent overriding
     // its contents with the state generated by the initial unfolding of the
@@ -320,7 +341,7 @@ module.exports = React.createClass({
   },
 
   onFixtureUpdate: function() {
-    if (!this.constructor.isFixtureSelected(this.props) ||
+    if (!this.refs.preview ||
         // Don't update fixture contents while the user is editing the fixture
         this.state.isEditorFocused) {
       return;
@@ -348,14 +369,23 @@ module.exports = React.createClass({
         _.merge(fixtureContents, JSON.parse(userInput));
       }
 
-      newState.fixtureContents = fixtureContents;
-      newState.isFixtureUserInputValid = true;
+      _.assign(newState, {
+        fixtureContents: fixtureContents,
+        fixtureChange: this.state.fixtureChange + 1,
+        isFixtureUserInputValid: true
+      });
     } catch (e) {
       newState.isFixtureUserInputValid = false;
       console.error(e);
     }
 
     this.setState(newState);
+  },
+
+  _getPreviewComponentKey: function() {
+    return this.props.component + '-' +
+           this.props.fixture + '-' +
+           this.state.fixtureChange;
   },
 
   _getPreviewClasses: function() {
@@ -380,6 +410,23 @@ module.exports = React.createClass({
                           fixtureName === this.props.fixture;
 
     return classNames(classes);
+  },
+
+  _extendFixtureRoute: function(newProps) {
+    var currentProps = {
+      component: this.props.component,
+      fixture: this.props.fixture,
+      editor: this.props.editor,
+      fullScreen: this.props.fullScreen
+    };
+
+    var defaultProps = this.constructor.getDefaultProps(),
+        props = _.assign(_.omit(currentProps, _.keys(newProps)), newProps);
+
+    // No need to include props with default values
+    return _.omit(props, function(value, key) {
+      return value === defaultProps[key];
+    });
   },
 
   _focusOnEditor: function() {

@@ -38,6 +38,7 @@ describe('ComponentPlayground component', function() {
     params = {
       components: {},
       router: {
+        goTo: sinon.spy(),
         routeLink: sinon.spy()
       }
     };
@@ -56,7 +57,8 @@ describe('ComponentPlayground component', function() {
           FirstComponent: {},
           SecondComponent: {
             fixtures: {
-              'simple state': {}
+              'simple state': {},
+              'complex state': {}
             }
           }
         };
@@ -133,17 +135,64 @@ describe('ComponentPlayground component', function() {
           utils.Simulate.click(component.refs.homeLink.getDOMNode());
         });
 
-        it('should route link on component fixture button', function() {
-          utils.Simulate.click(
-              component.refs['SecondComponentsimple stateButton'].getDOMNode());
-        });
-
         it('should route link on fixture editor button', function() {
           utils.Simulate.click(component.refs.editorButton.getDOMNode());
         });
 
         it('should route link on full screen button', function() {
           utils.Simulate.click(component.refs.fullScreenButton.getDOMNode());
+        });
+      });
+
+      describe('on fixture button click', function() {
+        beforeEach(function() {
+          render({
+            component: 'SecondComponent',
+            fixture: 'simple state',
+            state: {
+              fixtureChange: 10
+            }
+          });
+        });
+
+        it('should route link on new fixture', function() {
+          utils.Simulate.click(
+              component.refs['SecondComponentcomplex stateButton']
+                       .getDOMNode());
+
+          expect(params.router.goTo).to.have.been.called;
+        });
+
+        describe('on already selected fixture', function() {
+          var stateSet;
+
+          beforeEach(function() {
+            sinon.spy(component, 'setState');
+
+            utils.Simulate.click(
+                component.refs['SecondComponentsimple stateButton']
+                         .getDOMNode());
+
+            stateSet = component.setState.lastCall.args[0];
+          });
+
+          it('should not route link', function() {
+            expect(params.router.goTo).to.not.have.been.called;
+          });
+
+          it('should reset state', function() {
+            expect(stateSet.expandedComponents.length).to.equal(1);
+            expect(stateSet.expandedComponents[0]).to.equal('SecondComponent');
+            expect(stateSet.fixtureContents).to.equal(
+                params.components.SecondComponent.fixtures['simple state']);
+            expect(stateSet.fixtureUserInput).to.equal('{}');
+            expect(stateSet.isFixtureUserInputValid).to.equal(true);
+          });
+
+          it('should bump fixture change', function() {
+            expect(stateSet.fixtureChange)
+                  .to.equal(params.state.fixtureChange + 1);
+          });
         });
       });
     });
@@ -164,7 +213,8 @@ describe('ComponentPlayground component', function() {
           state: {
             fixtureContents: {
               lorem: 'dolor sit'
-            }
+            },
+            fixtureChange: 5
           }
         });
       });
@@ -187,40 +237,52 @@ describe('ComponentPlayground component', function() {
         expect(component.state.fixtureUserInput).to.equal('lorem ipsum');
       });
 
-      it('should update fixture contents on valid change', function() {
-        triggerEditorChange('{"lorem": "ipsum"}');
-
-        expect(component.state.fixtureContents.lorem).to.equal('ipsum');
-      });
-
-      it('should not update fixture contents on invalid change', function() {
-        triggerEditorChange('lorem ipsum');
-
-        expect(component.state.fixtureContents.lorem).to.equal('dolor sit');
-      });
-
       it('should empty fixture contents on empty input', function() {
         triggerEditorChange('');
 
         expect(component.state.fixtureContents).to.deep.equal({});
       });
 
-      it('should call console.error on invalid change', function() {
-        triggerEditorChange('lorem ipsum');
+      describe('on valid change', function() {
+        beforeEach(function() {
+          triggerEditorChange('{"lorem": "ipsum"}');
+        });
 
-        expect(console.error.lastCall.args[0]).to.be.an.instanceof(Error);
+        it('should update fixture contents', function() {
+          expect(component.state.fixtureContents.lorem).to.equal('ipsum');
+        });
+
+        it('should mark valid change in state', function() {
+          expect(component.state.isFixtureUserInputValid).to.equal(true);
+        });
+
+        it('should bump fixture change counter', function() {
+          expect(component.state.fixtureChange)
+                .to.equal(params.state.fixtureChange + 1);
+        });
       });
 
-      it('should mark valid change in state', function() {
-        triggerEditorChange('{"lorem": "ipsum"}');
+      describe('on invalid change', function() {
+        beforeEach(function() {
+          triggerEditorChange('lorem ipsum');
+        });
 
-        expect(component.state.isFixtureUserInputValid).to.equal(true);
-      });
+        it('should not update fixture contents', function() {
+          expect(component.state.fixtureContents.lorem).to.equal('dolor sit');
+        });
 
-      it('should mark invalid change in state', function() {
-        triggerEditorChange('lorem ipsum');
+        it('should call console.error', function() {
+          expect(console.error.lastCall.args[0]).to.be.an.instanceof(Error);
+        });
 
-        expect(component.state.isFixtureUserInputValid).to.equal(false);
+        it('should mark invalid change in state', function() {
+          expect(component.state.isFixtureUserInputValid).to.equal(false);
+        });
+
+        it('should not bump fixture change counter', function() {
+          expect(component.state.fixtureChange)
+                .to.equal(params.state.fixtureChange);
+        });
       });
     });
 
@@ -280,7 +342,7 @@ describe('ComponentPlayground component', function() {
 
         var setIntervalArgs = window.setInterval.lastCall.args;
         expect(setIntervalArgs[0]).to.equal(component.onFixtureUpdate);
-        expect(setIntervalArgs[1]).to.equal(400);
+        expect(setIntervalArgs[1]).to.equal(100);
       });
 
       it('should clear interval on unmount', function() {
