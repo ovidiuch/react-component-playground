@@ -164,7 +164,8 @@ describe('ComponentPlayground component', function() {
           state: {
             fixtureContents: {
               lorem: 'dolor sit'
-            }
+            },
+            fixtureChange: 5
           }
         });
       });
@@ -187,40 +188,52 @@ describe('ComponentPlayground component', function() {
         expect(component.state.fixtureUserInput).to.equal('lorem ipsum');
       });
 
-      it('should update fixture contents on valid change', function() {
-        triggerEditorChange('{"lorem": "ipsum"}');
-
-        expect(component.state.fixtureContents.lorem).to.equal('ipsum');
-      });
-
-      it('should not update fixture contents on invalid change', function() {
-        triggerEditorChange('lorem ipsum');
-
-        expect(component.state.fixtureContents.lorem).to.equal('dolor sit');
-      });
-
       it('should empty fixture contents on empty input', function() {
         triggerEditorChange('');
 
         expect(component.state.fixtureContents).to.deep.equal({});
       });
 
-      it('should call console.error on invalid change', function() {
-        triggerEditorChange('lorem ipsum');
+      describe("on valid change", function() {
+        beforeEach(function() {
+          triggerEditorChange('{"lorem": "ipsum"}');
+        });
 
-        expect(console.error.lastCall.args[0]).to.be.an.instanceof(Error);
+        it('should update fixture contents', function() {
+          expect(component.state.fixtureContents.lorem).to.equal('ipsum');
+        });
+
+        it('should mark valid change in state', function() {
+          expect(component.state.isFixtureUserInputValid).to.equal(true);
+        });
+
+        it('should bump fixture change counter', function() {
+          expect(component.state.fixtureChange)
+                .to.equal(params.state.fixtureChange + 1);
+        });
       });
 
-      it('should mark valid change in state', function() {
-        triggerEditorChange('{"lorem": "ipsum"}');
+      describe("on invalid change", function() {
+        beforeEach(function() {
+          triggerEditorChange('lorem ipsum');
+        });
 
-        expect(component.state.isFixtureUserInputValid).to.equal(true);
-      });
+        it('should not update fixture contents', function() {
+          expect(component.state.fixtureContents.lorem).to.equal('dolor sit');
+        });
 
-      it('should mark invalid change in state', function() {
-        triggerEditorChange('lorem ipsum');
+        it('should call console.error', function() {
+          expect(console.error.lastCall.args[0]).to.be.an.instanceof(Error);
+        });
 
-        expect(component.state.isFixtureUserInputValid).to.equal(false);
+        it('should mark invalid change in state', function() {
+          expect(component.state.isFixtureUserInputValid).to.equal(false);
+        });
+
+        it('should not bump fixture change counter', function() {
+          expect(component.state.fixtureChange)
+                .to.equal(params.state.fixtureChange);
+        });
       });
     });
 

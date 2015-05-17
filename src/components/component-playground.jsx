@@ -87,6 +87,7 @@ module.exports = React.createClass({
 
   getInitialState: function() {
     var defaultState = {
+      fixtureChange: 0,
       isEditorFocused: false
     };
 
@@ -99,7 +100,7 @@ module.exports = React.createClass({
       var params = {
         component: this.constructor.getSelectedComponentClass(this.props),
         // Child should re-render whenever fixture changes
-        key: JSON.stringify(this.state.fixtureContents)
+        key: this._getPreviewComponentKey()
       };
 
       return _.merge(params, _.omit(this.state.fixtureContents, 'state'));
@@ -273,10 +274,8 @@ module.exports = React.createClass({
 
   componentDidUpdate: function(prevProps, prevState) {
     if (this.refs.preview && (
-        // Avoid deep comparing the fixture contents when component and/or
-        // fixture changed, because it's more expensive
         this.constructor.didFixtureChange(prevProps, this.props) ||
-        !_.isEqual(this.state.fixtureContents, prevState.fixtureContents))) {
+        prevState.fixtureChange !== this.state.fixtureChange)) {
       this._injectPreviewChildState();
     }
   },
@@ -350,14 +349,23 @@ module.exports = React.createClass({
         _.merge(fixtureContents, JSON.parse(userInput));
       }
 
-      newState.fixtureContents = fixtureContents;
-      newState.isFixtureUserInputValid = true;
+      _.assign(newState, {
+        fixtureContents: fixtureContents,
+        fixtureChange: this.state.fixtureChange + 1,
+        isFixtureUserInputValid: true
+      });
     } catch (e) {
       newState.isFixtureUserInputValid = false;
       console.error(e);
     }
 
     this.setState(newState);
+  },
+
+  _getPreviewComponentKey: function() {
+    return this.props.component + '-' +
+           this.props.fixture + '-' +
+           this.state.fixtureChange;
   },
 
   _getPreviewClasses: function() {
