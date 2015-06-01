@@ -1,4 +1,5 @@
-var ComponentTree = require('react-component-tree'),
+var React = require('react/addons'),
+    ComponentTree = require('react-component-tree'),
     ComponentPlayground =
         require('../../../src/components/component-playground.jsx');
 
@@ -27,6 +28,11 @@ describe('ComponentPlayground component', function() {
           fixtures: {
             'blank state': {
               myProp: false,
+              children: [
+                React.createElement('span', {
+                  children: 'test child'
+                })
+              ],
               state: {
                 somethingHappened: true
               }
@@ -85,6 +91,15 @@ describe('ComponentPlayground component', function() {
         expect(component.state.fixtureContents.myProp).to.equal(false);
       });
 
+      it('should store unserializable props separately', function() {
+        render();
+
+        expect(component.state.fixtureContents.children).to.equal(undefined);
+        expect(component.state.fixtureUnserializableProps.children)
+              .to.equal(params.components.FirstComponent
+                        .fixtures['blank state'].children);
+      });
+
       it('should populate user input with stringified fixture contents',
          function() {
         render();
@@ -127,6 +142,11 @@ describe('ComponentPlayground component', function() {
 
         it('should reset fixture contents', function() {
           expect(component.state.fixtureContents.myProp).to.equal(true);
+        });
+
+        it('should reset unserializable fixture props', function() {
+          expect(component.state.fixtureUnserializableProps)
+                .to.deep.equal({});
         });
 
         it('should reset fixture user input', function() {

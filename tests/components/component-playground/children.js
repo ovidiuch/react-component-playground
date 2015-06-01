@@ -1,4 +1,5 @@
-var ComponentTree = require('react-component-tree'),
+var React = require('react/addons'),
+    ComponentTree = require('react-component-tree'),
     ComponentPlayground =
         require('../../../src/components/component-playground.jsx');
 
@@ -76,6 +77,13 @@ describe('ComponentPlayground component', function() {
                 paused: true
               }
             },
+            fixtureUnserializableProps: {
+              children: [
+                React.createElement('span', {
+                  children: 'test child'
+                })
+              ]
+            },
             fixtureChange: 155
           }
         });
@@ -94,6 +102,13 @@ describe('ComponentPlayground component', function() {
         var fixtureContents = component.state.fixtureContents;
         expect(childParams.width).to.equal(fixtureContents.width);
         expect(childParams.height).to.equal(fixtureContents.height);
+      });
+
+      it('should send unserializable props to preview child', function() {
+        render();
+
+        var unserializableProps = component.state.fixtureUnserializableProps;
+        expect(childParams.children).to.equal(unserializableProps.children);
       });
 
       it('should not send state as prop to preview child', function() {

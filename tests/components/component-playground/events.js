@@ -294,9 +294,6 @@ describe('ComponentPlayground component', function() {
               fixtures: {
                 'simple state': {
                   defaultProp: true,
-                  unserializableProp: function() {
-                    // noop
-                  },
                   nested: {
                     nestedProp: true
                   }
@@ -312,17 +309,7 @@ describe('ComponentPlayground component', function() {
         render();
       });
 
-      it('should extend unserializable fixture contents with user input',
-         function() {
-        triggerEditorChange('{"customProp": true}');
-
-        expect(component.state.fixtureContents.customProp).to.equal(true);
-        expect(component.state.fixtureContents.unserializableProp).to.equal(
-            params.components.MyComponent.fixtures['simple state']
-                                         .unserializableProp);
-      });
-
-      it('should not extend serializable fixture contents with user input',
+      it('should override fixture contents with user input',
          function() {
         triggerEditorChange('{"customProp": true}');
 
