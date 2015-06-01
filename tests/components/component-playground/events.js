@@ -183,7 +183,7 @@ describe('ComponentPlayground component', function() {
           it('should reset state', function() {
             expect(stateSet.expandedComponents.length).to.equal(1);
             expect(stateSet.expandedComponents[0]).to.equal('SecondComponent');
-            expect(stateSet.fixtureContents).to.equal(
+            expect(stateSet.fixtureContents).to.deep.equal(
                 params.components.SecondComponent.fixtures['simple state']);
             expect(stateSet.fixtureUserInput).to.equal('{}');
             expect(stateSet.isFixtureUserInputValid).to.equal(true);
