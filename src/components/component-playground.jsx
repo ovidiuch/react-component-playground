@@ -8,7 +8,6 @@ var _ = require('lodash'),
     parseLocation = require('react-querystring-router').uri.parseLocation,
     isSerializable = require('../lib/is-serializable.js').isSerializable;
 
-
 module.exports = React.createClass({
   /**
    * ComponentPlayground provides a minimal frame for loading React components
