@@ -369,9 +369,8 @@ module.exports = React.createClass({
     var snapshot = ComponentTree.serialize(this.refs.preview);
 
     // Continue to ignore unserializable props
-    var serializableSnapshot = _.omit(snapshot, function(val, key) {
-      return _.includes(_.keys(this.state.fixtureUnserializableProps), key);
-    }.bind(this));
+    var serializableSnapshot =
+        _.omit(snapshot, _.keys(this.state.fixtureUnserializableProps));
 
     this.setState({
       fixtureContents: serializableSnapshot,
