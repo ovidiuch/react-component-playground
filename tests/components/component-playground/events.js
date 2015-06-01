@@ -354,8 +354,11 @@ describe('ComponentPlayground component', function() {
       });
 
       describe('on callback', function() {
-        var childSnapshot = {},
-            stringifiedChildSnapshot = '{}';
+        var childSnapshot = {
+              unserializableProp: function() {},
+              serializableProp: 3
+            },
+            stringifiedChildSnapshot = '{"serializableProp":3}';
 
         beforeEach(function() {
           sinon.stub(ComponentTree, 'serialize').returns(childSnapshot);
@@ -365,7 +368,10 @@ describe('ComponentPlayground component', function() {
             FirstComponent: {},
             SecondComponent: {
               fixtures: {
-                'simple state': {}
+                'simple state': {
+                  unserializableProp: function() {},
+                  serializableProp: 3
+                }
               }
             }
           };
@@ -429,11 +435,22 @@ describe('ComponentPlayground component', function() {
 
             it('should update child snapshot state', function() {
               var stateSet = component.setState.lastCall.args[0];
-              expect(stateSet.fixtureContents).to.equal(childSnapshot);
+              expect(stateSet.fixtureContents.serializableProp)
+                    .to.equal(childSnapshot.serializableProp);
+
+              // Unserializable props are ignored
+              expect(stateSet.fixtureContents.unserializableProp)
+                    .to.equal(undefined);
             });
 
             it('should stringify preview child snapshot', function() {
-              expect(JSON.stringify).to.have.been.calledWith(childSnapshot);
+              var stringifiedObj = JSON.stringify.lastCall.args[0];
+              expect(stringifiedObj.serializableProp)
+                    .to.equal(childSnapshot.serializableProp);
+
+              // Unserializable props are ignored
+              expect(stringifiedObj.unserializableProp)
+                    .to.equal(undefined);
             });
 
             it('should update stringified child snapshot state', function() {
