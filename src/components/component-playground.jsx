@@ -73,10 +73,6 @@ module.exports = React.createClass({
             fixtureContents = {},
             fixtureUnserializableProps = {};
 
-        // We store unserializable props separately because they can't show up
-        // in the editor but we need to make sure the loaded component
-        // receives them regardless of the user input
-
         // Unserializable props are stored separately from serializable ones
         // because the serializable props can be overriden by the user using
         // the editor, while the unserializable props are always attached
