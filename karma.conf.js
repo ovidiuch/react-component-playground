@@ -18,12 +18,9 @@ module.exports = function(config) {
     webpack: {
       module: {
         loaders: [{
-          test: /\.js$/,
+          test: /\.jsx?$/,
           exclude: /node_modules/,
           loader: 'babel-loader'
-        }, {
-          test: /\.jsx$/,
-          loader: 'babel-loader!jsx-loader'
         }, {
           test: /\.less$/,
           loader: 'style-loader!css-loader!less-loader'
