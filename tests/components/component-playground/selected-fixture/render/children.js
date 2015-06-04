@@ -1,9 +1,7 @@
 var FIXTURE = 'selected-fixture';
 
 describe(`ComponentPlayground (${FIXTURE}) Render Children`, function() {
-  var _ = require('lodash'),
-      $ = require('jquery'),
-      loadChild = require('react-component-tree').loadChild,
+  var loadChild = require('react-component-tree').loadChild,
       render = require('tests/lib/render-component.js'),
       stubLoadChild = require('tests/setup/stub-load-child.js'),
       originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
@@ -15,7 +13,6 @@ describe(`ComponentPlayground (${FIXTURE}) Render Children`, function() {
       childParams,
       shouldBeCloned = {};
 
-  // Child components are outside the scope
   stubLoadChild();
 
   beforeEach(function() {
