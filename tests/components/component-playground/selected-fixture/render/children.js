@@ -10,28 +10,12 @@ describe(`ComponentPlayground (${FIXTURE}) Render Children`, function() {
       $component,
       container,
       fixture,
-      childParams,
-      shouldBeCloned = {};
+      childParams;
 
   stubLoadChild();
 
   beforeEach(function() {
     ({fixture, container, component, $component} = render(originalFixture));
-
-    // Generating this state from props is tested separately in lifecycle tests
-    component.setState({
-      fixtureContents: {
-        width: 200,
-        height: 100,
-        state: {
-          paused: true
-        },
-        nested: {
-          obj: shouldBeCloned
-        }
-      },
-      fixtureChange: 155
-    });
 
     childParams = component.children.preview.call(component);
   });
@@ -46,7 +30,7 @@ describe(`ComponentPlayground (${FIXTURE}) Render Children`, function() {
   });
 
   it('should send fixture contents to preview child', function() {
-    var fixtureContents = component.state.fixtureContents;
+    var fixtureContents = fixture.state.fixtureContents;
     expect(childParams.width).to.equal(fixtureContents.width);
     expect(childParams.height).to.equal(fixtureContents.height);
   });
@@ -63,7 +47,9 @@ describe(`ComponentPlayground (${FIXTURE}) Render Children`, function() {
   });
 
   it('should clone fixture contents sent to child', function() {
-    expect(childParams.nested.obj).to.deep.equal(shouldBeCloned);
-    expect(childParams.nested.obj).to.not.equal(shouldBeCloned);
+    expect(childParams.nested.shouldBeCloned).to.deep.equal(
+        fixture.state.fixtureContents.nested.shouldBeCloned);
+    expect(childParams.nested.shouldBeCloned).to.not.equal(
+        fixture.state.fixtureContents.nested.shouldBeCloned);
   });
 });
