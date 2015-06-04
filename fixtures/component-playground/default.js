@@ -3,9 +3,12 @@ module.exports = {
     FirstComponent: {
       class: 'FirstComponent',
       fixtures: {
-        'default': {},
-        'error': {},
-        'simple': {}
+        'default': {
+          nestedProp: {
+            foo: 'bar'
+          }
+        },
+        'error': {}
       }
     },
     SecondComponent: {
@@ -16,6 +19,7 @@ module.exports = {
     }
   },
   router: {
-    routeLink: function() {}
+    routeLink: function() {},
+    goTo: function() {}
   }
 };
