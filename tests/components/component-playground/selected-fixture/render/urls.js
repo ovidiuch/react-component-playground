@@ -1,11 +1,13 @@
-var _ = require('lodash'),
-    $ = require('jquery'),
-    render = require('tests/lib/render-component.js'),
-    getUrlProps = require('tests/lib/get-url-props.js'),
-    stubLoadChild = require('tests/setup/stub-load-child.js'),
-    originalFixture = require('../fixture.js');
+var FIXTURE = 'selected-fixture';
 
-describe('ComponentPlayground (selected fixture)', function() {
+describe(`ComponentPlayground (${FIXTURE}) Render URLs`, function() {
+  var _ = require('lodash'),
+      $ = require('jquery'),
+      render = require('tests/lib/render-component.js'),
+      getUrlProps = require('tests/lib/get-url-props.js'),
+      stubLoadChild = require('tests/setup/stub-load-child.js'),
+      originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
+
   var component,
       $component,
       container,
@@ -18,25 +20,23 @@ describe('ComponentPlayground (selected fixture)', function() {
     ({fixture, container, component, $component} = render(originalFixture));
   });
 
-  describe('Render (URLs)', function() {
-    it('should generate open full-screen url', function() {
-      var urlProps = getUrlProps(component.refs.fullScreenButton);
+  it('should generate open full-screen url', function() {
+    var urlProps = getUrlProps(component.refs.fullScreenButton);
 
-      expect(urlProps).to.deep.equal({
-        component: fixture.component,
-        fixture: fixture.fixture,
-        fullScreen: true
-      });
+    expect(urlProps).to.deep.equal({
+      component: fixture.component,
+      fixture: fixture.fixture,
+      fullScreen: true
     });
+  });
 
-    it('should generate open fixture editor url', function() {
-      var urlProps = getUrlProps(component.refs.editorButton);
+  it('should generate open fixture editor url', function() {
+    var urlProps = getUrlProps(component.refs.editorButton);
 
-      expect(urlProps).to.deep.equal({
-        component: fixture.component,
-        fixture: fixture.fixture,
-        editor: true
-      });
+    expect(urlProps).to.deep.equal({
+      component: fixture.component,
+      fixture: fixture.fixture,
+      editor: true
     });
   });
 });

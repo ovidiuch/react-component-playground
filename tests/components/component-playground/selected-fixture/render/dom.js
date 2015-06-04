@@ -1,10 +1,12 @@
-var _ = require('lodash'),
-    $ = require('jquery'),
-    render = require('tests/lib/render-component.js'),
-    stubLoadChild = require('tests/setup/stub-load-child.js'),
-    originalFixture = require('../fixture.js');
+var FIXTURE = 'selected-fixture';
 
-describe('ComponentPlayground (selected fixture)', function() {
+describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
+  var _ = require('lodash'),
+      $ = require('jquery'),
+      render = require('tests/lib/render-component.js'),
+      stubLoadChild = require('tests/setup/stub-load-child.js'),
+      originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
+
   var component,
       $component,
       container,
@@ -17,38 +19,36 @@ describe('ComponentPlayground (selected fixture)', function() {
     ({fixture, container, component, $component} = render(originalFixture));
   });
 
-  describe('Render (DOM)', function() {
-    it('should not render cosmos plug', function() {
-      expect(component.refs.cosmosPlug).to.not.exist;
-    });
+  it('should not render cosmos plug', function() {
+    expect(component.refs.cosmosPlug).to.not.exist;
+  });
 
-    it('should add container class on preview element', function() {
-      var $previewDOMNode = $(component.refs.previewContainer.getDOMNode());
+  it('should add container class on preview element', function() {
+    var $previewDOMNode = $(component.refs.previewContainer.getDOMNode());
 
-      expect($previewDOMNode.hasClass(fixture.containerClassName)).to.be.true;
-    });
+    expect($previewDOMNode.hasClass(fixture.containerClassName)).to.be.true;
+  });
 
-    it('should add extra class to selected component', function() {
-      var $expandedComponent = $component.find('.component.expanded');
+  it('should add extra class to selected component', function() {
+    var $expandedComponent = $component.find('.component.expanded');
 
-      expect($expandedComponent.length).to.equal(1);
-      expect($expandedComponent.find('.component-name').text())
-            .to.equal('FirstComponent');
-    });
+    expect($expandedComponent.length).to.equal(1);
+    expect($expandedComponent.find('.component-name').text())
+          .to.equal('FirstComponent');
+  });
 
-    it('should add extra class to selected fixture', function() {
-      var $fixture = $component.find('.component-fixture.selected');
+  it('should add extra class to selected fixture', function() {
+    var $fixture = $component.find('.component-fixture.selected');
 
-      expect($fixture.length).to.equal(1);
-      expect($fixture.text()).to.equal('default');
-    });
+    expect($fixture.length).to.equal(1);
+    expect($fixture.text()).to.equal('default');
+  });
 
-    it('should render full screen button', function() {
-      expect(component.refs.fullScreenButton).to.exist;
-    });
+  it('should render full screen button', function() {
+    expect(component.refs.fullScreenButton).to.exist;
+  });
 
-    it('should render fixture editor button', function() {
-      expect(component.refs.editorButton).to.exist;
-    });
+  it('should render fixture editor button', function() {
+    expect(component.refs.editorButton).to.exist;
   });
 });

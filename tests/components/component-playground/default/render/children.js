@@ -1,11 +1,13 @@
-var _ = require('lodash'),
-    $ = require('jquery'),
-    loadChild = require('react-component-tree').loadChild,
-    render = require('tests/lib/render-component.js'),
-    stubLoadChild = require('tests/setup/stub-load-child.js'),
-    originalFixture = require('../fixture.js');
+var FIXTURE = 'default';
 
-describe('ComponentPlayground (default)', function() {
+describe(`ComponentPlayground (${FIXTURE}) Render Children`, function() {
+  var _ = require('lodash'),
+      $ = require('jquery'),
+      loadChild = require('react-component-tree').loadChild,
+      render = require('tests/lib/render-component.js'),
+      stubLoadChild = require('tests/setup/stub-load-child.js'),
+      originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
+
   var component,
       $component,
       container,
@@ -18,9 +20,7 @@ describe('ComponentPlayground (default)', function() {
     ({fixture, container, component, $component} = render(originalFixture));
   });
 
-  describe('Render (children)', function() {
-    it('should not load preview component', function() {
-      expect(loadChild.loadChild).to.not.have.been.called;
-    });
+  it('should not load preview component', function() {
+    expect(loadChild.loadChild).to.not.have.been.called;
   });
 });

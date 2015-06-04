@@ -1,10 +1,12 @@
-var _ = require('lodash'),
-    $ = require('jquery'),
-    render = require('tests/lib/render-component.js'),
-    stubLoadChild = require('tests/setup/stub-load-child.js'),
-    originalFixture = require('../fixture.js');
+var FIXTURE = 'full-screen';
 
-describe('ComponentPlayground (full screen)', function() {
+describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
+  var _ = require('lodash'),
+      $ = require('jquery'),
+      render = require('tests/lib/render-component.js'),
+      stubLoadChild = require('tests/setup/stub-load-child.js'),
+      originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
+
   var component,
       $component,
       container,
@@ -17,9 +19,7 @@ describe('ComponentPlayground (full screen)', function() {
     ({fixture, container, component, $component} = render(originalFixture));
   });
 
-  describe('Render (DOM)', function() {
-    it('should add full-screen class', function() {
-      expect($component.hasClass('full-screen')).to.equal(true);
-    });
+  it('should add full-screen class', function() {
+    expect($component.hasClass('full-screen')).to.equal(true);
   });
 });
