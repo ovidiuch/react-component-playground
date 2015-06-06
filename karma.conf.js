@@ -1,3 +1,5 @@
+var path = require('path');
+
 module.exports = function(config) {
   config.set({
     basePath: 'tests/',
@@ -16,14 +18,18 @@ module.exports = function(config) {
     },
     reporters: ['mocha', 'coverage'],
     webpack: {
+      resolve: {
+        alias: {
+          components: path.join(__dirname, 'src/components'),
+          fixtures: path.join(__dirname, 'fixtures'),
+          tests: path.join(__dirname, 'tests')
+        }
+      },
       module: {
         loaders: [{
-          test: /\.js$/,
+          test: /\.jsx?$/,
           exclude: /node_modules/,
           loader: 'babel-loader'
-        }, {
-          test: /\.jsx$/,
-          loader: 'babel-loader!jsx-loader'
         }, {
           test: /\.less$/,
           loader: 'style-loader!css-loader!less-loader'
