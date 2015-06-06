@@ -6,15 +6,15 @@ module.exports = _.merge({}, defaultFixture, {
   fixture: 'default',
   containerClassName: 'my-app-namespace',
   state: {
-    // Generating this state from props is tested in lifecycle tests
+    // Generating this state from props is tested in mounting tests
     fixtureContents: {
-      width: 200,
-      height: 100,
-      state: {
-        paused: true
-      },
+      myProp: false,
       nested: {
+        foo: 'bar',
         shouldBeCloned: {}
+      },
+      state: {
+        somethingHappened: false
       }
     },
     fixtureChange: 10

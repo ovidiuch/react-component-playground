@@ -31,8 +31,11 @@ describe(`ComponentPlayground (${FIXTURE}) Render Children`, function() {
 
   it('should send fixture contents to preview child', function() {
     var fixtureContents = fixture.state.fixtureContents;
-    expect(childParams.width).to.equal(fixtureContents.width);
-    expect(childParams.height).to.equal(fixtureContents.height);
+    for (var key in fixtureContents) {
+      if (key !== 'state') {
+        expect(childParams[key]).to.deep.equal(fixtureContents[key]);
+      }
+    }
   });
 
   it('should not send state as prop to preview child', function() {

@@ -4,8 +4,13 @@ module.exports = {
       class: 'FirstComponent',
       fixtures: {
         'default': {
-          nestedProp: {
-            foo: 'bar'
+          myProp: false,
+          nested: {
+            foo: 'bar',
+            shouldBeCloned: {}
+          },
+          state: {
+            somethingHappened: false
           }
         },
         'error': {}
