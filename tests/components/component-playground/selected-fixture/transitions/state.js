@@ -1,7 +1,9 @@
 var FIXTURE = 'selected-fixture';
 
 describe(`ComponentPlayground (${FIXTURE}) Transitions State`, function() {
-  var ComponentTree = require('react-component-tree'),
+  var React = require('react'),
+      _ = require('lodash'),
+      ComponentTree = require('react-component-tree'),
       render = require('tests/lib/render-component.js'),
       originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
 
@@ -13,7 +15,9 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions State`, function() {
 
   beforeEach(function() {
     ({fixture, container, component, $component} = render(originalFixture));
+  });
 
+  it('should inject preview state when fixture changes', function() {
     sinon.stub(ComponentTree, 'injectState');
 
     component.setState({
@@ -21,14 +25,21 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions State`, function() {
     });
 
     stateInjected = ComponentTree.injectState.lastCall.args;
-  });
+    expect(stateInjected[0]).to.equal(component.refs.preview);
+    expect(stateInjected[1].somethingHappened).to.equal(false);
 
-  afterEach(function() {
     ComponentTree.injectState.restore();
   });
 
-  it('should inject preview state when fixture changes', function() {
-    expect(stateInjected[0]).to.equal(component.refs.preview);
-    expect(stateInjected[1].somethingHappened).to.equal(false);
+  it('shoud not render when setting identical fixture contents', function() {
+    sinon.stub(component, 'render').returns(React.createElement('span'));
+
+    component.setState({
+      fixtureContents: _.cloneDeep(fixture.state.fixtureContents)
+    });
+
+    expect(component.render).to.not.have.been.called;
+
+    component.render.restore();
   });
 });
