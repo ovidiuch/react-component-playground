@@ -272,6 +272,15 @@ module.exports = React.createClass({
     }
   },
 
+  shouldComponentUpdate: function(nextProps, nextState) {
+    // This is pretty wasteful, but it's more important to make sure the loaded
+    // component doesn't render on every onFixtureUpdate loop, unless its state
+    // changed
+    return !_.isEqual(this.props, nextProps) ||
+           !_.isEqual(_.omit(this.state, 'isEditorFocused'),
+                      _.omit(nextState, 'isEditorFocused'));
+  },
+
   componentDidUpdate: function(prevProps, prevState) {
     if (this.refs.preview && (
         this.constructor.didFixtureChange(prevProps, this.props) ||
