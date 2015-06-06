@@ -14,7 +14,7 @@ describe(`ComponentPlayground (${FIXTURE}) Events Handlers`, function() {
     ({fixture, container, component, $component} = render(originalFixture));
   });
 
-  define("on fixture update", function() {
+  define('on fixture update', function() {
     var stateSet;
 
     beforeEach(function() {
