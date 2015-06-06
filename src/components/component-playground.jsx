@@ -394,7 +394,7 @@ module.exports = React.createClass({
         newState = {fixtureUserInput: userInput};
 
     try {
-      var fixtureContents = _.clone(this.state.fixtureUnserializableProps);
+      var fixtureContents = {};
 
       if (userInput) {
         _.merge(fixtureContents, JSON.parse(userInput));
