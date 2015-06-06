@@ -19,7 +19,12 @@ module.exports = {
     SecondComponent: {
       class: 'SecondComponent',
       fixtures: {
-        'index': {}
+        'index': {
+          myProp: true,
+          state: {
+            somethingHappened: true
+          }
+        }
       }
     }
   },
