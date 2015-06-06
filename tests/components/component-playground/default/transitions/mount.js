@@ -1,6 +1,6 @@
 var FIXTURE = 'default';
 
-describe(`ComponentPlayground (${FIXTURE}) Lifecycle Mount`, function() {
+describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
   var React = require('react'),
       render = require('tests/lib/render-component.js'),
       originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
