@@ -1,4 +1,5 @@
-var _ = require('lodash'),
+var React = require('react'),
+    _ = require('lodash'),
     defaultFixture = require('./default.js');
 
 module.exports = _.merge({}, defaultFixture, {
@@ -16,6 +17,13 @@ module.exports = _.merge({}, defaultFixture, {
       state: {
         somethingHappened: false
       }
+    },
+    fixtureUnserializableProps: {
+      children: [
+        React.createElement('span', {
+          children: 'test child'
+        })
+      ]
     },
     fixtureChange: 10
   }

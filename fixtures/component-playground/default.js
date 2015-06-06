@@ -1,3 +1,5 @@
+var React = require('react');
+
 module.exports = {
   components: {
     FirstComponent: {
@@ -9,6 +11,11 @@ module.exports = {
             foo: 'bar',
             shouldBeCloned: {}
           },
+          children: [
+            React.createElement('span', {
+              children: 'test child'
+            })
+          ],
           state: {
             somethingHappened: false
           }
