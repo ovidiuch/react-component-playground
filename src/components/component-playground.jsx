@@ -5,7 +5,8 @@ var _ = require('lodash'),
     classNames = require('classnames'),
     ComponentTree = require('react-component-tree'),
     stringifyParams = require('react-querystring-router').uri.stringifyParams,
-    parseLocation = require('react-querystring-router').uri.parseLocation;
+    parseLocation = require('react-querystring-router').uri.parseLocation,
+    isSerializable = require('../lib/is-serializable.js').isSerializable;
 
 module.exports = React.createClass({
   /**
@@ -62,15 +63,31 @@ module.exports = React.createClass({
         expandedComponents:
             this.getExpandedComponents(props, expandedComponents),
         fixtureContents: {},
+        fixtureUnserializableProps: {},
         fixtureUserInput: '{}',
         isFixtureUserInputValid: true
       };
 
       if (this.isFixtureSelected(props)) {
-        var fixtureContents = this.getSelectedFixtureContents(props);
+        var originalFixtureContents = this.getSelectedFixtureContents(props),
+            fixtureContents = {},
+            fixtureUnserializableProps = {};
+
+        // Unserializable props are stored separately from serializable ones
+        // because the serializable props can be overriden by the user using
+        // the editor, while the unserializable props are always attached
+        // behind the scenes
+        _.forEach(originalFixtureContents, function(value, key) {
+          if (isSerializable(value)) {
+            fixtureContents[key] = value;
+          } else {
+            fixtureUnserializableProps[key] = value;
+          }
+        });
 
         _.assign(state, {
           fixtureContents: fixtureContents,
+          fixtureUnserializableProps: fixtureUnserializableProps,
           fixtureUserInput: this.getStringifiedFixtureContents(fixtureContents)
         });
       }
@@ -103,6 +120,9 @@ module.exports = React.createClass({
         // Child should re-render whenever fixture changes
         key: this._getPreviewComponentKey()
       };
+
+      // Shallow apply unserializable props
+      _.assign(params, this.state.fixtureUnserializableProps);
 
       return _.merge(params, _.omit(this.state.fixtureContents, 'state'));
     }
@@ -357,10 +377,14 @@ module.exports = React.createClass({
 
     var snapshot = ComponentTree.serialize(this.refs.preview);
 
+    // Continue to ignore unserializable props
+    var serializableSnapshot =
+        _.omit(snapshot, _.keys(this.state.fixtureUnserializableProps));
+
     this.setState({
-      fixtureContents: snapshot,
+      fixtureContents: serializableSnapshot,
       fixtureUserInput:
-          this.constructor.getStringifiedFixtureContents(snapshot),
+          this.constructor.getStringifiedFixtureContents(serializableSnapshot),
       isFixtureUserInputValid: true
     });
   },
@@ -370,15 +394,7 @@ module.exports = React.createClass({
         newState = {fixtureUserInput: userInput};
 
     try {
-      var originalFixtureContents =
-          this.constructor.getSelectedFixtureContents(this.props);
-
-      // We only want to extend Function props because they can't be serialized
-      // and they are not part of the editor's contents
-      var fixtureContents =
-          _.pick(originalFixtureContents, function(value, key) {
-            return _.isFunction(value);
-          });
+      var fixtureContents = {};
 
       if (userInput) {
         _.merge(fixtureContents, JSON.parse(userInput));

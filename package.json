@@ -10,7 +10,7 @@
   "dependencies": {
     "classnames": "^1.2.0",
     "lodash": "^3.6.0",
-    "react-component-tree": "^0.2.2",
+    "react-component-tree": "^0.2.3",
     "react-querystring-router": "^0.2.0"
   },
   "devDependencies": {

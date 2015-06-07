@@ -42,6 +42,10 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Props`, function() {
     expect(stateSet.fixtureContents.myProp).to.equal(true);
   });
 
+  it('should reset unserializable fixture props', function() {
+    expect(stateSet.fixtureUnserializableProps).to.deep.equal({});
+  });
+
   it('should replace fixture user input', function() {
     expect(JSON.parse(stateSet.fixtureUserInput).myProp).to.equal(true);
   });
