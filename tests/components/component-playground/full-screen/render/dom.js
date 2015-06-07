@@ -2,7 +2,7 @@ var FIXTURE = 'full-screen';
 
 describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
   var render = require('tests/lib/render-component.js'),
-      originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
+      fixture = require(`fixtures/component-playground/${FIXTURE}.js`);
 
   var component,
       $component,
@@ -10,7 +10,7 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
       fixture;
 
   beforeEach(function() {
-    ({fixture, container, component, $component} = render(originalFixture));
+    ({container, component, $component} = render(fixture));
   });
 
   it('should add full-screen class', function() {

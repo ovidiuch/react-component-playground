@@ -5,14 +5,14 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
       utils = React.addons.TestUtils,
       _ = require('lodash'),
       render = require('tests/lib/render-component.js'),
-      originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
+      fixture = require(`fixtures/component-playground/${FIXTURE}.js`);
 
   var component,
       $component,
       container,
       fixture;
 
-  var stubbedFixture = _.assign({}, originalFixture, {
+  var stubbedFixture = _.assign({}, fixture, {
     router: {
       goTo: sinon.spy(),
       routeLink: sinon.spy()
@@ -20,7 +20,7 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
   });
 
   beforeEach(function() {
-    ({fixture, container, component, $component} = render(stubbedFixture));
+    ({container, component, $component} = render(stubbedFixture));
   });
 
   afterEach(function() {

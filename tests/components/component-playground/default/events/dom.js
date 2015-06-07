@@ -4,7 +4,7 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
   var React = require('react/addons'),
       utils = React.addons.TestUtils,
       render = require('tests/lib/render-component.js'),
-      originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
+      fixture = require(`fixtures/component-playground/${FIXTURE}.js`);
 
   var component,
       $component,
@@ -12,7 +12,7 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
       fixture;
 
   beforeEach(function() {
-    ({fixture, container, component, $component} = render(originalFixture));
+    ({container, component, $component} = render(fixture));
   });
 
   it('should mark expanded component on click', function() {

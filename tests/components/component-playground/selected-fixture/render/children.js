@@ -4,7 +4,7 @@ describe(`ComponentPlayground (${FIXTURE}) Render Children`, function() {
   var loadChild = require('react-component-tree').loadChild,
       render = require('tests/lib/render-component.js'),
       stubLoadChild = require('tests/setup/stub-load-child.js'),
-      originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
+      fixture = require(`fixtures/component-playground/${FIXTURE}.js`);
 
   var component,
       $component,
@@ -15,7 +15,7 @@ describe(`ComponentPlayground (${FIXTURE}) Render Children`, function() {
   stubLoadChild();
 
   beforeEach(function() {
-    ({fixture, container, component, $component} = render(originalFixture));
+    ({container, component, $component} = render(fixture));
 
     childParams = component.children.preview.call(component);
   });

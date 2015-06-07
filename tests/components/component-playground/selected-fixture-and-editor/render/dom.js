@@ -3,7 +3,7 @@ var FIXTURE = 'selected-fixture-and-editor';
 describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
   var $ = require('jquery'),
       render = require('tests/lib/render-component.js'),
-      originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
+      fixture = require(`fixtures/component-playground/${FIXTURE}.js`);
 
   var component,
       $component,
@@ -11,7 +11,7 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
       fixture;
 
   beforeEach(function() {
-    ({fixture, container, component, $component} = render(originalFixture));
+    ({container, component, $component} = render(fixture));
   });
 
   it('should render fixture editor', function() {

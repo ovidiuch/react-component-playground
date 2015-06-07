@@ -3,7 +3,7 @@ var FIXTURE = 'selected-fixture-and-editor';
 describe(`ComponentPlayground (${FIXTURE}) Events Handlers`, function() {
   var ComponentTree = require('react-component-tree'),
       render = require('tests/lib/render-component.js'),
-      originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
+      fixture = require(`fixtures/component-playground/${FIXTURE}.js`);
 
   var component,
       $component,
@@ -11,7 +11,7 @@ describe(`ComponentPlayground (${FIXTURE}) Events Handlers`, function() {
       fixture;
 
   beforeEach(function() {
-    ({fixture, container, component, $component} = render(originalFixture));
+    ({container, component, $component} = render(fixture));
   });
 
   define('on fixture update', function() {

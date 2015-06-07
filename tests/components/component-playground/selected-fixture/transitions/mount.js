@@ -3,7 +3,7 @@ var FIXTURE = 'selected-fixture';
 describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
   var ComponentTree = require('react-component-tree'),
       render = require('tests/lib/render-component.js'),
-      originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
+      fixture = require(`fixtures/component-playground/${FIXTURE}.js`);
 
   var component,
       $component,
@@ -12,12 +12,12 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
 
   // The following tests are about the initial state generation, so we don't
   // want it included in the fixture
-  var statelessFixture = _.omit(originalFixture, 'state');
+  var statelessFixture = _.omit(fixture, 'state');
 
   beforeEach(function() {
     sinon.stub(ComponentTree, 'injectState');
 
-    ({fixture, container, component, $component} = render(statelessFixture));
+    ({container, component, $component} = render(statelessFixture));
   });
 
   afterEach(function() {
