@@ -49,6 +49,12 @@ describe(`ComponentPlayground (${FIXTURE}) Events Handlers`, function() {
       }
     });
 
+    it('should ignore unserializable child state', function() {
+      for (var key in fixture.state.fixtureUnserializableProps) {
+        expect(stateSet.fixtureContents[key]).to.be.undefined;
+      }
+    });
+
     it('should update stringified child snapshot state', function() {
       expect(stateSet.fixtureUserInput)
             .to.equal(JSON.stringify(fixture.state.fixtureContents, null, 2));

@@ -31,8 +31,14 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
     expect(expandedComponents[0]).to.equal('FirstComponent');
   });
 
-  it('should populate state with fixture contents', function() {
+  it('should populate state with serializable fixture contents', function() {
     expect(component.state.fixtureContents.myProp).to.equal(false);
+  });
+
+  it('should populate state with unserializable fixture props', function() {
+    expect(component.state.fixtureUnserializableProps.children).to.equal(
+        fixture.components[fixture.component]
+               .fixtures[fixture.fixture].children);
   });
 
   it('should populate stringified fixture contents as user input', function() {
