@@ -5,7 +5,7 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions State`, function() {
       _ = require('lodash'),
       ComponentTree = require('react-component-tree'),
       render = require('tests/lib/render-component.js'),
-      originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
+      fixture = require(`fixtures/component-playground/${FIXTURE}.js`);
 
   var component,
       $component,
@@ -14,7 +14,7 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions State`, function() {
       stateInjected;
 
   beforeEach(function() {
-    ({fixture, container, component, $component} = render(originalFixture));
+    ({container, component, $component} = render(fixture));
   });
 
   it('should inject preview state when fixture changes', function() {

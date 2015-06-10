@@ -4,7 +4,7 @@ describe(`ComponentPlayground (${FIXTURE}) Render Children`, function() {
   var loadChild = require('react-component-tree').loadChild,
       render = require('tests/lib/render-component.js'),
       stubLoadChild = require('tests/setup/stub-load-child.js'),
-      originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
+      fixture = require(`fixtures/component-playground/${FIXTURE}.js`);
 
   var component,
       $component,
@@ -15,7 +15,7 @@ describe(`ComponentPlayground (${FIXTURE}) Render Children`, function() {
   stubLoadChild();
 
   beforeEach(function() {
-    ({fixture, container, component, $component} = render(originalFixture));
+    ({container, component, $component} = render(fixture));
 
     childParams = component.children.preview.call(component);
   });
@@ -31,10 +31,20 @@ describe(`ComponentPlayground (${FIXTURE}) Render Children`, function() {
 
   it('should send fixture contents to preview child', function() {
     var fixtureContents = fixture.state.fixtureContents;
+
     for (var key in fixtureContents) {
       if (key !== 'state') {
         expect(childParams[key]).to.deep.equal(fixtureContents[key]);
       }
+    }
+  });
+
+  it('should send unserializable props to preview child', function() {
+    var fixtureUnserializableContents =
+        fixture.state.fixtureUnserializableContents;
+
+    for (var key in fixtureUnserializableContents) {
+      expect(childParams[key]).to.equal(fixtureUnserializableContents[key]);
     }
   });
 

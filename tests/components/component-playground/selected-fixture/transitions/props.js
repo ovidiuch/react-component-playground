@@ -3,7 +3,7 @@ var FIXTURE = 'selected-fixture';
 describe(`ComponentPlayground (${FIXTURE}) Transitions Props`, function() {
   var ComponentTree = require('react-component-tree'),
       render = require('tests/lib/render-component.js'),
-      originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
+      fixture = require(`fixtures/component-playground/${FIXTURE}.js`);
 
   var component,
       $component,
@@ -13,7 +13,7 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Props`, function() {
       stateInjected;
 
   beforeEach(function() {
-    ({fixture, container, component, $component} = render(originalFixture));
+    ({container, component, $component} = render(fixture));
 
     sinon.stub(ComponentTree, 'injectState');
     sinon.spy(component, 'setState');
@@ -40,6 +40,10 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Props`, function() {
 
   it('should replace fixture contents', function() {
     expect(stateSet.fixtureContents.myProp).to.equal(true);
+  });
+
+  it('should reset unserializable fixture props', function() {
+    expect(stateSet.fixtureUnserializableProps).to.deep.equal({});
   });
 
   it('should replace fixture user input', function() {

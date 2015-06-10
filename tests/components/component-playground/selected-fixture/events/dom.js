@@ -5,14 +5,14 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
       utils = React.addons.TestUtils,
       _ = require('lodash'),
       render = require('tests/lib/render-component.js'),
-      originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
+      fixture = require(`fixtures/component-playground/${FIXTURE}.js`);
 
   var component,
       $component,
       container,
       fixture;
 
-  var stubbedFixture = _.assign({}, originalFixture, {
+  var stubbedFixture = _.assign({}, fixture, {
     router: {
       goTo: sinon.spy(),
       routeLink: sinon.spy()
@@ -20,7 +20,7 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
   });
 
   beforeEach(function() {
-    ({fixture, container, component, $component} = render(stubbedFixture));
+    ({container, component, $component} = render(stubbedFixture));
   });
 
   afterEach(function() {
@@ -74,12 +74,13 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
     });
 
     it('should reset state', function() {
-      var fixtureContents =
-          fixture.components.FirstComponent.fixtures['default'];
+      var fixtureContents = _.omit(
+          fixture.components.FirstComponent.fixtures['default'],
+          _.keys(component.state.fixtureUnserializableProps));
 
       expect(stateSet.expandedComponents.length).to.equal(1);
       expect(stateSet.expandedComponents[0]).to.equal('FirstComponent');
-      expect(stateSet.fixtureContents).to.equal(fixtureContents);
+      expect(stateSet.fixtureContents).to.deep.equal(fixtureContents);
       expect(stateSet.fixtureUserInput).to.equal(
           JSON.stringify(fixtureContents, null, 2));
       expect(stateSet.isFixtureUserInputValid).to.equal(true);

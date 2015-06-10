@@ -3,7 +3,7 @@ var FIXTURE = 'selected-fixture';
 describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
   var ComponentTree = require('react-component-tree'),
       render = require('tests/lib/render-component.js'),
-      originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
+      fixture = require(`fixtures/component-playground/${FIXTURE}.js`);
 
   var component,
       $component,
@@ -12,12 +12,12 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
 
   // The following tests are about the initial state generation, so we don't
   // want it included in the fixture
-  var statelessFixture = _.omit(originalFixture, 'state');
+  var statelessFixture = _.omit(fixture, 'state');
 
   beforeEach(function() {
     sinon.stub(ComponentTree, 'injectState');
 
-    ({fixture, container, component, $component} = render(statelessFixture));
+    ({container, component, $component} = render(statelessFixture));
   });
 
   afterEach(function() {
@@ -31,8 +31,14 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
     expect(expandedComponents[0]).to.equal('FirstComponent');
   });
 
-  it('should populate state with fixture contents', function() {
+  it('should populate state with serializable fixture contents', function() {
     expect(component.state.fixtureContents.myProp).to.equal(false);
+  });
+
+  it('should populate state with unserializable fixture props', function() {
+    expect(component.state.fixtureUnserializableProps.children).to.equal(
+        fixture.components[fixture.component]
+               .fixtures[fixture.fixture].children);
   });
 
   it('should populate stringified fixture contents as user input', function() {

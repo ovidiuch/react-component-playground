@@ -3,7 +3,7 @@ var FIXTURE = 'default';
 describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
   var React = require('react'),
       render = require('tests/lib/render-component.js'),
-      originalFixture = require(`fixtures/component-playground/${FIXTURE}.js`);
+      fixture = require(`fixtures/component-playground/${FIXTURE}.js`);
 
   var component,
       $component,
@@ -16,7 +16,7 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
     sinon.stub(window, 'setInterval').returns(timeoutId);
     sinon.stub(window, 'clearInterval');
 
-    ({fixture, container, component, $component} = render(originalFixture));
+    ({container, component, $component} = render(fixture));
   });
 
   afterEach(function() {
