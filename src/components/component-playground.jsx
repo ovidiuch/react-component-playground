@@ -180,7 +180,7 @@ module.exports = React.createClass({
         return <li className={this._getFixtureClasses(componentName,
                                                       fixtureName)}
                    key={fixtureName}>
-          <a ref={componentName + fixtureName + 'Button'}
+          <a ref={'fixtureButton-' + componentName + '-' + fixtureName}
              href={stringifyParams(fixtureProps)}
              title={fixtureName}
              onClick={this.onFixtureClick}>

@@ -20,7 +20,7 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
     sinon.spy(editorNode, 'focus');
 
     utils.Simulate.click(
-        component.refs['SecondComponentindexButton'].getDOMNode());
+        component.refs['fixtureButton-SecondComponent-index'].getDOMNode());
 
     expect(editorNode.focus).to.have.been.called;
   });

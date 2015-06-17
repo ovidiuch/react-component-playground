@@ -48,7 +48,7 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
 
   it('should route link on new fixture button', function() {
     utils.Simulate.click(
-        component.refs['FirstComponenterrorButton'].getDOMNode());
+        component.refs['fixtureButton-FirstComponent-error'].getDOMNode());
 
     expect(component.props.router.goTo).to.have.been.called;
   });
@@ -60,7 +60,7 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
       sinon.spy(component, 'setState');
 
       utils.Simulate.click(
-          component.refs['FirstComponentdefaultButton'].getDOMNode());
+          component.refs['fixtureButton-FirstComponent-default'].getDOMNode());
 
       stateSet = component.setState.lastCall.args[0];
     });

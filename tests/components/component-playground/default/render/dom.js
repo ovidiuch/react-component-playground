@@ -31,8 +31,8 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
       var fixtures = fixture.components[componentName].fixtures;
 
       for (var fixtureName in fixtures) {
-        expect(component.refs[componentName + fixtureName + 'Button'])
-              .to.exist;
+        expect(component.refs[
+            'fixtureButton-' + componentName + '-' + fixtureName]).to.exist;
       }
     }
   });
@@ -42,8 +42,8 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
       var componentFixtures = fixture.components[componentName].fixtures;
 
       for (var fixtureName in componentFixtures) {
-        var fixtureButton =
-            component.refs[componentName + fixtureName + 'Button'];
+        var fixtureButton = component.refs[
+            'fixtureButton-' + componentName + '-' + fixtureName];
 
         expect($(fixtureButton.getDOMNode()).text()).to.equal(fixtureName);
       }
