@@ -18,17 +18,11 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
     expect(component.refs.cosmosPlug).to.exist;
   });
 
-  it('should render component buttons', function() {
-    for (var componentName in fixture.components) {
-      expect(component.refs[componentName + 'Button']).to.exist;
-    }
-  });
-
   it('should render component names', function() {
     for (var componentName in fixture.components) {
-      var componentButton = component.refs[componentName + 'Button'];
+      var nameElement = component.refs['componentName-' + componentName];
 
-      expect($(componentButton.getDOMNode()).text()).to.equal(componentName);
+      expect($(nameElement.getDOMNode()).text()).to.equal(componentName);
     }
   });
 

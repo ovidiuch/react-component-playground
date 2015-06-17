@@ -96,29 +96,19 @@
 
       .component {
         .component-name {
+          display: block;
+          height: 50px;
           margin: 0;
-          padding: 0;
-
-          a {
-            display: block;
-            height: 50px;
-            padding: 0 10px;
-            color: #aaa;
-            font-size: 16px;
-            line-height: 50px;
-            text-decoration: none;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-
-            &:hover {
-              color: #fafafa;
-            }
-          }
+          padding: 0 10px;
+          color: #aaa;
+          font-size: 16px;
+          line-height: 50px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         .component-fixtures {
-          display: none;
           margin: 0;
           padding: 5px 0;
           background: #f3f3f3;
@@ -150,18 +140,6 @@
                 font-weight: bold;
               }
             }
-          }
-        }
-
-        &.expanded {
-          .component-name {
-            a {
-              color: #fafafa;
-            }
-          }
-
-          .component-fixtures {
-            display: block;
           }
         }
       }

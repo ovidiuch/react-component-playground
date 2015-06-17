@@ -28,14 +28,6 @@ module.exports = React.createClass({
   },
 
   statics: {
-    getExpandedComponents: function(props, alreadyExpanded) {
-      if (!props.component || _.contains(alreadyExpanded, props.component)) {
-        return alreadyExpanded;
-      }
-
-      return alreadyExpanded.concat(props.component);
-    },
-
     isFixtureSelected: function(props) {
       return props.component && props.fixture;
     },
@@ -58,10 +50,8 @@ module.exports = React.createClass({
       return JSON.stringify(fixtureContents, null, 2);
     },
 
-    getFixtureState: function(props, expandedComponents) {
+    getFixtureState: function(props) {
       var state = {
-        expandedComponents:
-            this.getExpandedComponents(props, expandedComponents),
         fixtureContents: {},
         fixtureUnserializableProps: {},
         fixtureUserInput: '{}',
@@ -109,8 +99,7 @@ module.exports = React.createClass({
       isEditorFocused: false
     };
 
-    return _.assign(defaultState,
-                    this.constructor.getFixtureState(this.props, []));
+    return _.assign(defaultState, this.constructor.getFixtureState(this.props));
   },
 
   children: {
@@ -169,20 +158,9 @@ module.exports = React.createClass({
     return <ul className="components">
       {_.map(this.props.components, function(component, componentName) {
 
-        var classes = classNames({
-          'component': true,
-          'expanded': _.contains(this.state.expandedComponents, componentName)
-        });
-
-        return <li className={classes} key={componentName}>
-          <p className="component-name">
-            <a ref={componentName + 'Button'}
-               href="#toggle-component"
-               title={componentName}
-               onClick={_.partial(this.onComponentClick, componentName)}>
-              {componentName}
-            </a>
-          </p>
+        return <li className="component" key={componentName}>
+          <p ref={'componentName-' + componentName}
+             className="component-name">{componentName}</p>
           {this._renderComponentFixtures(componentName, component.fixtures)}
         </li>;
 
@@ -287,8 +265,7 @@ module.exports = React.createClass({
 
   componentWillReceiveProps: function(nextProps) {
     if (this.constructor.didFixtureChange(this.props, nextProps)) {
-      this.setState(this.constructor.getFixtureState(
-          nextProps, this.state.expandedComponents));
+      this.setState(this.constructor.getFixtureState(nextProps));
     }
   },
 
@@ -313,23 +290,6 @@ module.exports = React.createClass({
     clearInterval(this._fixtureUpdateInterval);
   },
 
-  onComponentClick: function(componentName, event) {
-    event.preventDefault();
-
-    var currentlyExpanded = this.state.expandedComponents,
-        componentIndex = currentlyExpanded.indexOf(componentName),
-        toBeExpanded;
-
-    if (componentIndex !== -1) {
-      toBeExpanded = _.clone(currentlyExpanded);
-      toBeExpanded.splice(componentIndex, 1);
-    } else {
-      toBeExpanded = currentlyExpanded.concat(componentName);
-    }
-
-    this.setState({expandedComponents: toBeExpanded});
-  },
-
   onFixtureClick: function(event) {
     event.preventDefault();
 
@@ -341,9 +301,7 @@ module.exports = React.createClass({
     } else {
       // This happens when we want to reset a fixture to its original state by
       // clicking on the fixture button while already selected
-      var originalState =
-          this.constructor.getFixtureState(this.props,
-                                           this.state.expandedComponents);
+      var originalState = this.constructor.getFixtureState(this.props);
 
       // We also need to bump fixtureChange to trigger a key change for the
       // preview child, because the component and fixture names didn't change

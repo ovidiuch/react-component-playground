@@ -32,12 +32,6 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Props`, function() {
     component.setState.restore();
   });
 
-  it('should expand both prev and new components', function() {
-    expect(stateSet.expandedComponents.length).to.equal(2);
-    expect(stateSet.expandedComponents[0]).to.equal('FirstComponent');
-    expect(stateSet.expandedComponents[1]).to.equal('SecondComponent');
-  });
-
   it('should replace fixture contents', function() {
     expect(stateSet.fixtureContents.myProp).to.equal(true);
   });
