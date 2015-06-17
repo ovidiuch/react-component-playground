@@ -25,7 +25,8 @@ describe(`ComponentPlayground (${FIXTURE}) Render URLs`, function() {
   });
 
   it('should include editor prop in fixture url', function() {
-    var firstFixtureButton = component.refs.FirstComponentdefaultButton,
+    var firstFixtureButton =
+        component.refs['fixtureButton-FirstComponent-default'],
         urlProps = getUrlProps(firstFixtureButton);
 
     expect(urlProps).to.deep.equal({

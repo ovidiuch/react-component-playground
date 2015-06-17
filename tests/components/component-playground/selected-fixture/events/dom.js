@@ -48,7 +48,7 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
 
   it('should route link on new fixture button', function() {
     utils.Simulate.click(
-        component.refs['FirstComponenterrorButton'].getDOMNode());
+        component.refs['fixtureButton-FirstComponent-error'].getDOMNode());
 
     expect(component.props.router.goTo).to.have.been.called;
   });
@@ -60,7 +60,7 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
       sinon.spy(component, 'setState');
 
       utils.Simulate.click(
-          component.refs['FirstComponentdefaultButton'].getDOMNode());
+          component.refs['fixtureButton-FirstComponent-default'].getDOMNode());
 
       stateSet = component.setState.lastCall.args[0];
     });
@@ -78,8 +78,6 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
           fixture.components.FirstComponent.fixtures['default'],
           _.keys(component.state.fixtureUnserializableProps));
 
-      expect(stateSet.expandedComponents.length).to.equal(1);
-      expect(stateSet.expandedComponents[0]).to.equal('FirstComponent');
       expect(stateSet.fixtureContents).to.deep.equal(fixtureContents);
       expect(stateSet.fixtureUserInput).to.equal(
           JSON.stringify(fixtureContents, null, 2));

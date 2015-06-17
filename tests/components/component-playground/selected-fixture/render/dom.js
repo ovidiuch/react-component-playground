@@ -24,14 +24,6 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
     expect($previewDOMNode.hasClass(fixture.containerClassName)).to.be.true;
   });
 
-  it('should add extra class to selected component', function() {
-    var $expandedComponent = $component.find('.component.expanded');
-
-    expect($expandedComponent.length).to.equal(1);
-    expect($expandedComponent.find('.component-name').text())
-          .to.equal('FirstComponent');
-  });
-
   it('should add extra class to selected fixture', function() {
     var $fixture = $component.find('.component-fixture.selected');
 

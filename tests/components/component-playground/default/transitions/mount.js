@@ -37,10 +37,6 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
   });
 
   describe('default state', function() {
-    it('should have to no expanded components', function() {
-      expect(component.state.expandedComponents.length).to.equal(0);
-    });
-
     it('should have empty fixture contents', function() {
       expect(component.state.fixtureContents).to.deep.equal({});
     });

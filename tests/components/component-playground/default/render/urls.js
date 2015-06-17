@@ -19,8 +19,8 @@ describe(`ComponentPlayground (${FIXTURE}) Render URLs`, function() {
       var fixtures = fixture.components[componentName].fixtures;
 
       for (var fixtureName in fixtures) {
-        var fixtureButton =
-            component.refs[componentName + fixtureName + 'Button'];
+        var fixtureButton = component.refs[
+            'fixtureButton-' + componentName + '-' + fixtureName];
         var urlProps = getUrlProps(fixtureButton);
 
         expect(urlProps).to.deep.equal({

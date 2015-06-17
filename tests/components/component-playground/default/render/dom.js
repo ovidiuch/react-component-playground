@@ -18,17 +18,11 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
     expect(component.refs.cosmosPlug).to.exist;
   });
 
-  it('should render component buttons', function() {
-    for (var componentName in fixture.components) {
-      expect(component.refs[componentName + 'Button']).to.exist;
-    }
-  });
-
   it('should render component names', function() {
     for (var componentName in fixture.components) {
-      var componentButton = component.refs[componentName + 'Button'];
+      var nameElement = component.refs['componentName-' + componentName];
 
-      expect($(componentButton.getDOMNode()).text()).to.equal(componentName);
+      expect($(nameElement.getDOMNode()).text()).to.equal(componentName);
     }
   });
 
@@ -37,8 +31,8 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
       var fixtures = fixture.components[componentName].fixtures;
 
       for (var fixtureName in fixtures) {
-        expect(component.refs[componentName + fixtureName + 'Button'])
-              .to.exist;
+        expect(component.refs[
+            'fixtureButton-' + componentName + '-' + fixtureName]).to.exist;
       }
     }
   });
@@ -48,8 +42,8 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
       var componentFixtures = fixture.components[componentName].fixtures;
 
       for (var fixtureName in componentFixtures) {
-        var fixtureButton =
-            component.refs[componentName + fixtureName + 'Button'];
+        var fixtureButton = component.refs[
+            'fixtureButton-' + componentName + '-' + fixtureName];
 
         expect($(fixtureButton.getDOMNode()).text()).to.equal(fixtureName);
       }

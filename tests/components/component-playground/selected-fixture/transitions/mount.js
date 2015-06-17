@@ -24,13 +24,6 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
     ComponentTree.injectState.restore();
   });
 
-  it('should expand component of selected fixture', function() {
-    var expandedComponents = component.state.expandedComponents;
-
-    expect(expandedComponents.length).to.equal(1);
-    expect(expandedComponents[0]).to.equal('FirstComponent');
-  });
-
   it('should populate state with serializable fixture contents', function() {
     expect(component.state.fixtureContents.myProp).to.equal(false);
   });
