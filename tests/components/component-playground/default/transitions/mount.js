@@ -15,6 +15,8 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
   beforeEach(function() {
     sinon.stub(window, 'setInterval').returns(timeoutId);
     sinon.stub(window, 'clearInterval');
+    sinon.stub(window, 'addEventListener');
+    sinon.stub(window, 'removeEventListener');
 
     ({container, component, $component} = render(fixture));
   });
@@ -22,6 +24,8 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
   afterEach(function() {
     window.setInterval.restore();
     window.clearInterval.restore();
+    window.addEventListener.restore();
+    window.removeEventListener.restore();
   });
 
   it('should register fixture update interval on mount', function() {
@@ -34,6 +38,18 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
     React.unmountComponentAtNode(container);
 
     expect(window.clearInterval).to.have.been.calledWith(timeoutId);
+  });
+
+  it('should add window resize listener on mount', function() {
+    expect(window.addEventListener).to.have.been.calledWith(
+        'resize', component.onWindowResize);
+  });
+
+  it('should remove window resize listener on unmount', function() {
+    React.unmountComponentAtNode(container);
+
+    expect(window.removeEventListener).to.have.been.calledWith(
+        'resize', component.onWindowResize);
   });
 
   describe('default state', function() {
@@ -55,6 +71,10 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
 
     it('should have fixture editor marked as not focused', function() {
       expect(component.state.isEditorFocused).to.equal(false);
+    });
+
+    it('should have landscape orientation', function() {
+      expect(component.state.orientation).to.equal('landscape');
     });
   });
 });

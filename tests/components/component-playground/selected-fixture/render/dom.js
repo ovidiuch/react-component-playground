@@ -18,10 +18,17 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
     expect(component.refs.cosmosPlug).to.not.exist;
   });
 
-  it('should add container class on preview element', function() {
-    var $previewDOMNode = $(component.refs.previewContainer.getDOMNode());
+  it('should add orientation class on content frame element', function() {
+    var $contentFrame = $(component.refs.contentFrame.getDOMNode());
 
-    expect($previewDOMNode.hasClass(fixture.containerClassName)).to.be.true;
+    expect($contentFrame.hasClass(
+        'orientation-' + component.state.orientation)).to.be.true;
+  });
+
+  it('should add container class on preview element', function() {
+    var $previewContainer = $(component.refs.previewContainer.getDOMNode());
+
+    expect($previewContainer.hasClass(fixture.containerClassName)).to.be.true;
   });
 
   it('should add extra class to selected fixture', function() {

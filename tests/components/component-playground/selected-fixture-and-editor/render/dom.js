@@ -18,9 +18,9 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
     expect(component.refs.editor).to.exist;
   });
 
-  it('should add aside class on preview container', function() {
-    expect($(component.refs.previewContainer.getDOMNode())
-           .hasClass('aside-fixture-editor')).to.be.true;
+  it('should add editor class on content frame node', function() {
+    expect($(component.refs.contentFrame.getDOMNode())
+           .hasClass('with-editor')).to.be.true;
   });
 
   it('should add selected class on editor button', function() {

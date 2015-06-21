@@ -153,12 +153,12 @@
     left: 300px;
     right: 0;
 
-    .fixture-editor-outer {
+    > .fixture-editor-outer {
       position: absolute;
       top: 0;
       bottom: 0;
       left: 0;
-      right: 50%;
+      right: 0;
       border: 1px solid rgba(16, 16, 16, 0.1);
       background: #f8f5ec;
 
@@ -189,9 +189,27 @@
       left: 0;
       right: 0;
       overflow: auto;
+    }
 
-      &.aside-fixture-editor {
-        left: 50%;
+    &.with-editor {
+      &.orientation-landscape {
+        > .fixture-editor-outer {
+          right: 50%;
+        }
+
+        > .preview {
+          left: 50%;
+        }
+      }
+
+      &.orientation-portrait {
+        > .fixture-editor-outer {
+          bottom: 50%;
+        }
+
+        > .preview {
+          top: 50%;
+        }
       }
     }
   }
