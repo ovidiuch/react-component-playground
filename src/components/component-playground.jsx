@@ -96,7 +96,8 @@ module.exports = React.createClass({
   getInitialState: function() {
     var defaultState = {
       fixtureChange: 0,
-      isEditorFocused: false
+      isEditorFocused: false,
+      orientation: 'landscape'
     };
 
     return _.assign(defaultState, this.constructor.getFixtureState(this.props));
@@ -193,7 +194,7 @@ module.exports = React.createClass({
   },
 
   _renderContentFrame: function() {
-    return <div className="content-frame">
+    return <div ref="contentFrame" className={this._getContentFrameClasses()}>
       <div ref="previewContainer" className={this._getPreviewClasses()}>
         {this.loadChild('preview')}
       </div>
@@ -261,6 +262,10 @@ module.exports = React.createClass({
     if (this.refs.preview) {
       this._injectPreviewChildState();
     }
+
+    window.addEventListener('resize', this.onWindowResize);
+
+    this._updateContentFrameOrientation();
   },
 
   componentWillReceiveProps: function(nextProps) {
@@ -288,6 +293,8 @@ module.exports = React.createClass({
 
   componentWillUnmount: function() {
     clearInterval(this._fixtureUpdateInterval);
+
+    window.removeEventListener('resize', this.onWindowResize);
   },
 
   onFixtureClick: function(event) {
@@ -371,16 +378,30 @@ module.exports = React.createClass({
     this.setState(newState);
   },
 
+  onWindowResize: function(e) {
+    this._updateContentFrameOrientation();
+  },
+
   _getPreviewComponentKey: function() {
     return this.props.component + '-' +
            this.props.fixture + '-' +
            this.state.fixtureChange;
   },
 
+  _getContentFrameClasses: function() {
+    var classes = {
+      'content-frame': true,
+      'with-editor': this.props.editor
+    };
+
+    classes['orientation-' + this.state.orientation] = true;
+
+    return classNames(classes);
+  },
+
   _getPreviewClasses: function() {
     var classes = {
-      'preview': true,
-      'aside-fixture-editor': this.props.editor
+      'preview': true
     };
 
     if (this.props.containerClassName) {
@@ -428,5 +449,18 @@ module.exports = React.createClass({
     if (!_.isEmpty(state)) {
       ComponentTree.injectState(this.refs.preview, _.cloneDeep(state));
     }
+  },
+
+  _updateContentFrameOrientation: function() {
+    if (!this.constructor.isFixtureSelected(this.props)) {
+      return;
+    }
+
+    var contentNode = this.refs.contentFrame.getDOMNode();
+
+    this.setState({
+      orientation: contentNode.offsetHeight > contentNode.offsetWidth ?
+                   'portrait' : 'landscape'
+    });
   }
 });
