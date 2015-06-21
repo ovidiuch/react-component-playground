@@ -21,39 +21,33 @@ describe(`ComponentPlayground (${FIXTURE}) Events Handlers`, function() {
   });
 
   describe('orientation', function() {
+    function simulateWindowResize(width, height) {
+      sinon.stub(component.refs.contentFrame, 'getDOMNode').returns({
+        offsetWidth: width,
+        offsetHeight: height
+      });
+
+      component.onWindowResize();
+    }
+
     afterEach(function() {
       component.refs.contentFrame.getDOMNode.restore();
     });
 
     it('should be set to landscape on width > height', function() {
-      sinon.stub(component.refs.contentFrame, 'getDOMNode').returns({
-        offsetWidth: 300,
-        offsetHeight: 200
-      });
-
-      component.onWindowResize();
+      simulateWindowResize(300, 200);
 
       expect(component.setState.args[0][0].orientation).to.equal('landscape');
     });
 
     it('should be set to landscape on width == height', function() {
-      sinon.stub(component.refs.contentFrame, 'getDOMNode').returns({
-        offsetWidth: 300,
-        offsetHeight: 300
-      });
-
-      component.onWindowResize();
+      simulateWindowResize(300, 300);
 
       expect(component.setState.args[0][0].orientation).to.equal('landscape');
     });
 
     it('should be set to portrait on width < height', function() {
-      sinon.stub(component.refs.contentFrame, 'getDOMNode').returns({
-        offsetWidth: 200,
-        offsetHeight: 300
-      });
-
-      component.onWindowResize();
+      simulateWindowResize(200, 300);
 
       expect(component.setState.args[0][0].orientation).to.equal('portrait');
     });
