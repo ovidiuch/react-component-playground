@@ -1,143 +1,210 @@
+@default-spacing: 10px;
+@default-font-family: 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
+@default-font-size: 12px;
+@default-darken-color: rgba(0, 0, 0, 0.2);
+
+@left-nav-width: 250px;
+@left-nav-bgcolor: #2e2c29;
+@left-nav-bgcolor-selected: #403f3a;
+@left-nav-color: #adaaa4;
+@left-nav-color-selected: #dddcda;
+
+@header-height: 140px;
+
+@atom-size: 200px;
+@atom-nucleus-size: 30px;
+@atom-ring-width: 8px;
+@atom-ring-rotation: 70deg;
+@atom-rotation-duration: 20s;
+@atom-color: #61dafb;
+
+@header-menu-button-size: 50px;
+@header-menu-editor-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAB/ElEQVR4nL3WX4iMURjH8c/MjkJWhORPKEXKlUIkyeZPmyillb1y5dKFElfbXohLF3LhbmtLDUOaTYOolba4FCWSP+GGWGZtyp9xcc40b+Odmnm1+9Tbe3rOeZ7vec57nt9MrlQcNtWWn3ICCvE9ByewF/OQazP+D97hDEajbxNOYQg36pD5uI/1GTe6Cj/jeAPuYC72ow+lPM5GwEgMyHXw5LEYY+iKlf2OwC5cRm8eB/EDR/CmwypqqGIjnsY8u/E1zs/AxTwW4W1cnMU2C0e0BvfwTfi29XyP67erlhGwBbdxDZewJII+oTeO+//nCm/FLZTwGseif1lM/h49qGaFbIuAqxEw2DT/UeO7ZGrG7ajgSgvAI6GCz1khO3ATxRaAMezCeNJZ0L7tRBmzsQBHm+ZHsQ8TzYHtQnoioIzlQjcn7W70TaYFt3NcM2PyEaFh9+BBYr4iVDCJhVkhBczCK6GzJ3Bc6K0yDgidPqAhkv8kaNdOCj3wRajqOg5riOMAnqcFdnq7+vFM2HFfAkAQzFTlKAhaszSOf6Ws+Y51Tb4XGmoLK+N7PA2SF7SnG+elH18t7j75JAHduBDHlTRIrlQcXo2Hwt2v4kPawhaWwwrhBj4RBDO1T14Kcn1O+C1Y2wGEoFNDOJ0GqENE0KEOk7dt0/JvZVogfwHdM3Runhr5dwAAAABJRU5ErkJggg==);
+@header-menu-editor-icon-selected: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAB+UlEQVR4nL3WT4iNURjH8c995ypkREj+hFKkrBQiSSZ/mkTZjMzKytJCidVkMbG0kIXdrBSGdCddRI00xVKUxtz8CRtiuGNS/lyLc2737Xqn7n0189Tbe3rOOc/3POc9z++8hcrYqOm2ZNoJKMb3PJzEfixAocX5f/AO/RiOvi04jQHcqkMW4iE25lzoGvyM7U24h/k4iB4MJjgXAUNxQqGNJ8FSjKAjZvY7AjtwBd0JDuMHjuJNm1nUUMVmPI9x9uJr7J+FSwmW4G0cnMe2Clu0Dg/wTfi29XhP66erlhOwDXdxA5exLII+oTu2e//nCG/HHQziNY5H/4oY/D26UM0L2REB1yPgbFP/R43vkqsYd6KMa1MAnggZfM4L2YXbuDoFYAR7MJ52FrVuu1HCXCzCsab+YRzARPPEViFdEVDCSqGa03Y/+iazJreyXbNj8CGhYPfhUaq/LGQwicV5IUXMwSuhsidwQqitEg4Jld6nIZL/BGjVTgk18EXI6iaOaIhjHzIvp3ZPVy9eCCvuSQEIgpmpHEVBa5bH9q+MMd+xocn3UkNtYXV8j2dBEkF7OnFB9vbV4urTTxrQiYuxXc6CFCpjo2vxWDj7VXzIGjiFFbBKOIHPBMHMrJOKINfnhbtgfRsQgk4N4EwWgJBJmzHbtxn5W5kRyF+GYXb8gC07QAAAAABJRU5ErkJggg==);
+@header-menu-full-screen-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAABxUlEQVR4nL3Wv2sUQRTA8c+eGsHCxipa2QSxUgRLC0WDGITkUgv+ABsRCxv/CEmpiCiIogZSBLUQCwUrY2GjoGArdmJCEHPgj2J3cG5uZ1Yi8cFxu+/te9+d92Nmq4X5uzZaes3/G/zK/N5mfC/gR8ZnDYdTyL7Ci3zK6D+jytjGsDeF5OQ5pjO2BZxTv3lRSpAVzOJb4ZlbuPEvkO24g62FZ/o4ux7ISnR9Qp2WNlAfD7C5uV+VSV0KeYHdeNIBmkkAyziiXtXPHOQdnjUBvzRBcqAZPEwAx7CE2ziN7/gQnKtmGKuWpY41gaci3RL2Y0sEOIrXie9QvLCStlwO1Hl/HOkORoCvGcBIvK45CaBXLbapDGBEuiBwEgda9FeU2/uvIbO470+RYym1dyvkYhOwBFjGITzqAI1jDrtSyBzmcaYAmMTLxhY3QwzaqZ61S+o0D0F66ra7iesZQCh+aIZ0jhbVG+pEo9uUQoJUOF8ABBkYHdjJCDAkpcKvZgAxqI+nhRidkG3Y0+G/Q73XrRvSU58XpzL2ccM16IQMCvZr2o/Zyx2AtXARCnxcdCYn8l773nYVH0VdlADuhZvqf34Sbaj8Bk6ycMLiKlQaAAAAAElFTkSuQmCC);
+
+@fixture-line-height: 30px;
+@fixture-component-font-size: 16px;
+@fixture-component-color: rgba(173, 170, 164, 0.6);
+
+@editor-font-family: Menlo, Consolas, 'Courier New', monospace;
+@editor-font-size: 13px;
+@editor-line-height: 1.5em;
+@editor-border-color: rgba(16, 16, 16, 0.1);
+
+@checkerboard-square-size: 25px;
+@checkerboard-color: #f1f1f1;
+
+@keyframes roundandround {
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+
 .component-playground {
   position: absolute;
   width: 100%;
   height: 100%;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
 
-  > .header {
+  > .left-nav {
     position: absolute;
     top: 0;
-    left: 0;
-    right: 0;
-    height: 50px;
-    background: #222;
-
-    h1 {
-      margin: 0;
-      padding: 0 10px;
-      font-size: 22px;
-      font-weight: 400;
-      line-height: 50px;
-
-      .home-link {
-        color: #fafafa;
-        text-decoration: none;
-
-        .react {
-          color: #00d8ff;
-        }
-      }
-
-      .cosmos-plug {
-        margin-left: 10px;
-        color: #aaa;
-        font-weight: 300;
-
-        a {
-          color: #cc7a6f;
-          text-decoration: none;
-        }
-      }
-    }
-
-    ul.buttons {
-      position: absolute;
-      top: 0;
-      right: 0;
-      margin: 0;
-      padding: 0;
-      list-style-type: none;
-
-      li {
-        float: left;
-        height: 50px;
-        padding: 0 10px;
-        background: #222;
-        line-height: 50px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        text-decoration: none;
-
-        a {
-          color: #aaa;
-          text-decoration: none;
-
-          &:hover {
-            color: #fafafa;
-          }
-        }
-
-        &.selected-button {
-          background: #333;
-
-          a {
-            color: #fafafa;
-          }
-        }
-      }
-    }
-  }
-
-  > .fixtures {
-    position: absolute;
-    top: 50px;
     bottom: 0;
     left: 0;
-    width: 300px;
-    background: #2d2d2d;
-    overflow-x: hidden;
-    overflow-y: auto;
+    width: @left-nav-width;
+    background: @left-nav-bgcolor;
+    font-family: @default-font-family;
+    font-size: @default-font-size;
 
-    .components {
-      margin: 0;
-      padding: 0;
-      list-style-type: none;
+    .header {
+      position: relative;
+      height: @header-height;
+      background: @default-darken-color;
+      overflow: hidden;
 
-      .component {
-        .component-name {
-          display: block;
-          height: 50px;
-          margin: 0;
-          padding: 0 10px;
-          color: #aaa;
-          font-size: 16px;
-          line-height: 50px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
+      .atom {
+        position: absolute;
+        top: @default-spacing;
+        left: (@left-nav-width - @atom-size) / 2;
+        width: @atom-size;
+        height: @atom-size;
+        animation: roundandround @atom-rotation-duration infinite linear;
+
+        .electron {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+
+          &:nth-child(2) {
+            transform: rotateZ(60deg);
+          }
+
+          &:nth-child(3) {
+            transform: rotateZ(120deg);
+          }
+
+          .ring {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border: @atom-ring-width solid @atom-color;
+            box-sizing: border-box;
+            border-radius: 50%;
+            transform: rotateX(@atom-ring-rotation);
+          }
         }
 
-        .component-fixtures {
-          margin: 0;
-          padding: 5px 0;
-          background: #f3f3f3;
-          list-style-type: none;
-          overflow: hidden;
+        .nucleus {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: @atom-nucleus-size;
+          height: @atom-nucleus-size;
+          margin: 0.5 * -@atom-nucleus-size 0 0 0.5 * -@atom-nucleus-size;
+          background: @atom-color;
+          border-radius: 100%;
+        }
+      }
 
-          .component-fixture {
+      .menu {
+        position: absolute;
+        bottom: @default-spacing;
+        right: @default-spacing;
+        margin: 0;
+
+        .button {
+          display: inline-block;
+          width: @header-menu-button-size;
+          height: @header-menu-button-size;
+          border-radius: 3px;
+          background-color: fadeout(@left-nav-bgcolor, 10%);
+          background-position: center center;
+          background-repeat: no-repeat;
+          color: @left-nav-color;
+
+          &:hover,
+          &.selected-button {
+            background-color: fadeout(@left-nav-bgcolor-selected, 10%);
+          }
+
+          &.fixture-editor-button {
+            margin-right: @default-spacing;
+            background-image: @header-menu-editor-icon;
+
+            &.selected-button {
+              background-image: @header-menu-editor-icon-selected;
+            }
+          }
+
+          &.full-screen-button {
+            background-image: @header-menu-full-screen-icon;
+          }
+        }
+      }
+    }
+
+    .fixtures {
+      position: absolute;
+      top: @header-height;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+
+      .components {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+
+        .component {
+          padding: 0.5 * @default-spacing 0;
+          border-top: 1px solid @default-darken-color;
+
+          .component-name {
+            display: block;
+            height: @fixture-line-height;
+            margin: 0;
+            padding: 0 @default-spacing;
+            color: @fixture-component-color;
+            font-size: @fixture-component-font-size;
+            line-height: @fixture-line-height;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: default;
+          }
+
+          .component-fixtures {
             margin: 0;
             padding: 0;
+            list-style-type: none;
 
-            a {
-              display: block;
-              height: 30px;
-              padding: 0 10px;
-              color: #c05b4d;
-              line-height: 30px;
-              text-decoration: none;
-              white-space: nowrap;
-              overflow: hidden;
-              text-overflow: ellipsis;
+            .component-fixture {
+              margin: 0;
+              padding: 0;
 
-              &:hover {
-                background: rgba(0, 0, 0, 0.05);
-              }
-            }
-
-            &.selected {
               a {
-                font-weight: bold;
+                display: block;
+                height: @fixture-line-height;
+                padding: 0 @default-spacing;
+                color: @left-nav-color;
+                line-height: @fixture-line-height;
+                text-decoration: none;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+
+                &:hover {
+                  background: @left-nav-bgcolor-selected;
+                }
+              }
+
+              &.selected {
+                a {
+                  background: @left-nav-bgcolor-selected;
+                  color: @left-nav-color-selected;
+                }
               }
             }
           }
@@ -148,9 +215,9 @@
 
   > .content-frame {
     position: absolute;
-    top: 50px;
+    top: 0;
     bottom: 0;
-    left: 300px;
+    left: @left-nav-width;
     right: 0;
 
     > .fixture-editor-outer {
@@ -159,20 +226,20 @@
       bottom: 0;
       left: 0;
       right: 0;
-      border: 1px solid rgba(16, 16, 16, 0.1);
+      border: 1px solid @editor-border-color;
       background: #f8f5ec;
 
       .fixture-editor {
         width: 100%;
         height: 100%;
-        padding: 10px;
+        padding: @default-spacing;
         box-sizing: border-box;
         border: none;
         background: transparent;
         color: #637c84;
-        font-family: Menlo, Consolas, 'Courier New', monospace;
-        font-size: 13px;
-        line-height: 1.5em;
+        font-family: @editor-font-family;
+        font-size: @editor-font-size;
+        line-height: @editor-line-height;
         resize: none;
         outline: none;
 
@@ -189,6 +256,24 @@
       left: 0;
       right: 0;
       overflow: auto;
+      // Checkerboard effect on background
+      background-image:
+        linear-gradient(45deg,
+                        @checkerboard-color 25%,
+                        transparent 25%,
+                        transparent 75%,
+                        @checkerboard-color 75%,
+                        @checkerboard-color 100%),
+        linear-gradient(45deg,
+                        @checkerboard-color 25%,
+                        transparent 25%,
+                        transparent 75%,
+                        @checkerboard-color 75%,
+                        @checkerboard-color 100%);
+      background-size: 2 * @checkerboard-square-size
+                       2 * @checkerboard-square-size;
+      background-position: 0 0,
+                           @checkerboard-square-size @checkerboard-square-size;
     }
 
     &.with-editor {
@@ -215,11 +300,7 @@
   }
 
   &.full-screen {
-    > .header {
-      display: none;
-    }
-
-    > .fixtures {
+    > .left-nav {
       display: none;
     }
 

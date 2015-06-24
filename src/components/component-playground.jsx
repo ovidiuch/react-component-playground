@@ -128,19 +128,14 @@ module.exports = React.createClass({
 
     return (
       <div className={classes}>
-        <div className="header">
-          {isFixtureSelected ? this._renderButtons() : null}
-          <h1>
-            <a ref="homeLink"
-               href={stringifyParams({})}
-               className="home-link"
-               onClick={this.props.router.routeLink}>
-              <span className="react">React</span> Component Playground
-            </a>
-          </h1>
-        </div>
-        <div className="fixtures">
-          {this._renderFixtures()}
+        <div className="left-nav">
+          <div className="header">
+            {this._renderHomeButton()}
+            {isFixtureSelected ? this._renderMenu() : null}
+          </div>
+          <div className="fixtures">
+            {this._renderFixtures()}
+          </div>
         </div>
         {isFixtureSelected ? this._renderContentFrame() : null}
       </div>
@@ -211,15 +206,34 @@ module.exports = React.createClass({
     </div>;
   },
 
-  _renderButtons: function() {
-    return <ul className="buttons">
+  _renderHomeButton: function() {
+    return <a ref="homeLink"
+                className="atom"
+                href={stringifyParams({})}
+                onClick={this.props.router.routeLink}>
+      <span className="electron">
+        <span className="ring"></span>
+      </span>
+      <span className="electron">
+        <span className="ring"></span>
+      </span>
+      <span className="electron">
+        <span className="ring"></span>
+      </span>
+      <span className="nucleus"></span>
+    </a>;
+  },
+
+  _renderMenu: function() {
+    return <p className="menu">
       {this._renderFixtureEditorButton()}
       {this._renderFullScreenButton()}
-    </ul>;
+    </p>;
   },
 
   _renderFixtureEditorButton: function() {
     var classes = classNames({
+      'button': true,
       'fixture-editor-button': true,
       'selected-button': this.props.editor
     });
@@ -228,11 +242,10 @@ module.exports = React.createClass({
       editor: !this.props.editor
     });
 
-    return <li className={classes}>
-      <a href={stringifyParams(editorUrlProps)}
-         ref="editorButton"
-         onClick={this.props.router.routeLink}>Editor</a>
-    </li>;
+    return <a className={classes}
+              href={stringifyParams(editorUrlProps)}
+              ref="editorButton"
+              onClick={this.props.router.routeLink}></a>;
   },
 
   _renderFullScreenButton: function() {
@@ -241,11 +254,10 @@ module.exports = React.createClass({
       editor: false
     });
 
-    return <li className="full-screen-button">
-      <a href={stringifyParams(fullScreenProps)}
-         ref="fullScreenButton"
-         onClick={this.props.router.routeLink}>Fullscreen</a>
-    </li>;
+    return <a className="button full-screen-button"
+              href={stringifyParams(fullScreenProps)}
+              ref="fullScreenButton"
+              onClick={this.props.router.routeLink}></a>;
   },
 
   componentDidMount: function() {
