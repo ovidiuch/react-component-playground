@@ -137,7 +137,6 @@ module.exports = React.createClass({
                onClick={this.props.router.routeLink}>
               <span className="react">React</span> Component Playground
             </a>
-            {!isFixtureSelected ? this._renderCosmosPlug() : null}
           </h1>
         </div>
         <div className="fixtures">
@@ -146,13 +145,6 @@ module.exports = React.createClass({
         {isFixtureSelected ? this._renderContentFrame() : null}
       </div>
     );
-  },
-
-  _renderCosmosPlug: function() {
-    return <span ref="cosmosPlug" className="cosmos-plug">
-      {'powered by '}
-      <a href="https://github.com/skidding/cosmos">Cosmos</a>
-    </span>;
   },
 
   _renderFixtures: function() {

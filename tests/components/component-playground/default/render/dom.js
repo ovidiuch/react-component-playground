@@ -14,10 +14,6 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
     ({container, component, $component} = render(fixture));
   });
 
-  it('should render cosmos plug', function() {
-    expect(component.refs.cosmosPlug).to.exist;
-  });
-
   it('should render component names', function() {
     for (var componentName in fixture.components) {
       var nameElement = component.refs['componentName-' + componentName];

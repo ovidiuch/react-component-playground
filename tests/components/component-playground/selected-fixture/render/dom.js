@@ -14,10 +14,6 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
     ({container, component, $component} = render(fixture));
   });
 
-  it('should not render cosmos plug', function() {
-    expect(component.refs.cosmosPlug).to.not.exist;
-  });
-
   it('should add orientation class on content frame element', function() {
     var $contentFrame = $(component.refs.contentFrame.getDOMNode());
 
