@@ -35,12 +35,6 @@
 @checkerboard-square-size: 25px;
 @checkerboard-color: #f1f1f1;
 
-@keyframes roundandround {
-  to {
-    transform: rotateZ(360deg);
-  }
-}
-
 .component-playground {
   position: absolute;
   width: 100%;
@@ -68,7 +62,6 @@
         left: (@left-nav-width - @atom-size) / 2;
         width: @atom-size;
         height: @atom-size;
-        animation: roundandround @atom-rotation-duration infinite linear;
 
         .electron {
           position: absolute;
