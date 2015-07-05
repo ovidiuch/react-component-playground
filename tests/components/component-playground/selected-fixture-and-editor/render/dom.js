@@ -24,9 +24,7 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
   });
 
   it('should add selected class on editor button', function() {
-    // XXX: Class is set on button parent
-    expect($(component.getDOMNode())
-           .find('.fixture-editor-button')
+    expect($(component.refs.editorButton.getDOMNode())
            .hasClass('selected-button')).to.be.true;
   });
 
