@@ -27,6 +27,11 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
     expect($previewContainer.hasClass(fixture.containerClassName)).to.be.true;
   });
 
+  it('should remove selected class on home button', function() {
+    expect($(component.refs.homeButton.getDOMNode())
+           .hasClass('selected-button')).to.be.false;
+  });
+
   it('should add extra class to selected fixture', function() {
     var $fixture = $component.find('.component-fixture.selected');
 

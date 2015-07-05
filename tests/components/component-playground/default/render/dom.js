@@ -61,4 +61,9 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
   it('should not render fixture editor', function() {
     expect(component.refs.editor).to.not.exist;
   });
+
+  it('should add selected class on home button', function() {
+    expect($(component.refs.homeButton.getDOMNode())
+           .hasClass('selected-button')).to.be.true;
+  });
 });

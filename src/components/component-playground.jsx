@@ -207,20 +207,20 @@ module.exports = React.createClass({
   },
 
   _renderHomeButton: function() {
-    return <a ref="homeLink"
-                className="atom"
-                href={stringifyParams({})}
-                onClick={this.props.router.routeLink}>
+    var classes = classNames({
+      'button': true,
+      'play-button': true,
+      'selected-button': !this.constructor.isFixtureSelected(this.props)
+    });
+
+    return <a ref="homeButton"
+              className={classes}
+              href={stringifyParams({})}
+              onClick={this.props.router.routeLink}>
+      <span className="play-arrow"></span>
       <span className="electron">
-        <span className="ring"></span>
+        <span className="dot"></span>
       </span>
-      <span className="electron">
-        <span className="ring"></span>
-      </span>
-      <span className="electron">
-        <span className="ring"></span>
-      </span>
-      <span className="nucleus"></span>
     </a>;
   },
 
