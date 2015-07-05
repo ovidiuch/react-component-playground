@@ -217,10 +217,7 @@ module.exports = React.createClass({
               className={classes}
               href={stringifyParams({})}
               onClick={this.props.router.routeLink}>
-      <span className="play-arrow"></span>
-      <span className="electron">
-        <span className="dot"></span>
-      </span>
+      <span className="electron"></span>
     </a>;
   },
 
