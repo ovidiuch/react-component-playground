@@ -29,7 +29,7 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
   });
 
   it('should route link on home button', function() {
-    utils.Simulate.click(component.refs.homeLink.getDOMNode());
+    utils.Simulate.click(component.refs.homeButton.getDOMNode());
 
     expect(component.props.router.routeLink).to.have.been.called;
   });
