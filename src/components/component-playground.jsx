@@ -123,7 +123,7 @@ module.exports = React.createClass({
 
     var classes = {};
     classes[style['component-playground']] = true;
-    classes[style['full-screen']]= this.props.fullScreen;
+    classes[style['full-screen']] = this.props.fullScreen;
     classes = classNames(classes);
 
     return (
@@ -192,7 +192,8 @@ module.exports = React.createClass({
   _renderFixtureEditor: function() {
     var editorClasses = {};
     editorClasses[style['fixture-editor']] =  true;
-    editorClasses[style['invalid-syntax']] = !this.state.isFixtureUserInputValid;
+    editorClasses[style['invalid-syntax']] =
+      !this.state.isFixtureUserInputValid;
     editorClasses = classNames(editorClasses);
 
     return <div className={style['fixture-editor-outer']}>
@@ -210,7 +211,8 @@ module.exports = React.createClass({
     var classes = {};
     classes[style.button] = true;
     classes[style['play-button']] = true;
-    classes[style['selected-button']] = !this.constructor.isFixtureSelected(this.props);
+    classes[style['selected-button']] =
+      !this.constructor.isFixtureSelected(this.props);
 
     classes = classNames(classes);
 
