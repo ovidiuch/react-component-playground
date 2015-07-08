@@ -18,7 +18,7 @@
     "babel-loader": "^5.0.0",
     "chai": "^2.2.0",
     "coveralls": "^2.11.2",
-    "css-loader": "^0.10.1",
+    "css-loader": "^0.15.2",
     "esprima-fb": "^14001.1.0-dev-harmony-fb",
     "istanbul": "^0.3.13",
     "istanbul-instrumenter-loader": "^0.1.2",
@@ -39,7 +39,7 @@
     "react": "^0.13.1",
     "sinon": "^1.14.1",
     "sinon-chai": "^2.7.0",
-    "style-loader": "^0.10.1",
+    "style-loader": "^0.12.3",
     "webpack": "^1.8.2"
   },
   "peerDependencies": {

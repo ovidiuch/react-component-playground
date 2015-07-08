@@ -13,7 +13,7 @@ module.exports = {
       loader: 'babel-loader'
     }, {
       test: /\.less$/,
-      loader: 'style-loader!css-loader!less-loader'
+      loader: 'style-loader!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!less-loader'
     }]
   },
   output: {
