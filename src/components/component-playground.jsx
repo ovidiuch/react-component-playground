@@ -415,7 +415,7 @@ module.exports = React.createClass({
     var classes = {};
     classes[style['component-fixture']] = true;
     classes[style.selected] = componentName === this.props.component &&
-                          fixtureName === this.props.fixture;
+                              fixtureName === this.props.fixture;
 
     return classNames(classes);
   },
