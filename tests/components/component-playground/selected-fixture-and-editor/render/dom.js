@@ -1,6 +1,5 @@
 var FIXTURE = 'selected-fixture-and-editor';
 var style = require('components/component-playground.less');
-console.log(style)
 
 describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
   var $ = require('jquery'),
