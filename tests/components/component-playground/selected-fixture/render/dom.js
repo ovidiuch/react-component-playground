@@ -1,4 +1,5 @@
 var FIXTURE = 'selected-fixture';
+var style = require('components/component-playground.less');
 
 describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
   var $ = require('jquery'),
@@ -18,7 +19,7 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
     var $contentFrame = $(component.refs.contentFrame.getDOMNode());
 
     expect($contentFrame.hasClass(
-        'orientation-' + component.state.orientation)).to.be.true;
+        style['orientation-' + component.state.orientation])).to.be.true;
   });
 
   it('should add container class on preview element', function() {
@@ -29,11 +30,12 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
 
   it('should remove selected class on home button', function() {
     expect($(component.refs.homeButton.getDOMNode())
-           .hasClass('selected-button')).to.be.false;
+           .hasClass(style['selected-button'])).to.be.false;
   });
 
   it('should add extra class to selected fixture', function() {
-    var $fixture = $component.find('.component-fixture.selected');
+    var classes = '.' + style['component-fixture'] + '.' + style.selected;
+    var $fixture = $component.find(classes);
 
     expect($fixture.length).to.equal(1);
     expect($fixture.text()).to.equal('default');

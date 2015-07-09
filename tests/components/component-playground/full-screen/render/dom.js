@@ -1,4 +1,5 @@
 var FIXTURE = 'full-screen';
+var style = require('components/component-playground.less');
 
 describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
   var render = require('tests/lib/render-component.js'),
@@ -14,6 +15,6 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
   });
 
   it('should add full-screen class', function() {
-    expect($component.hasClass('full-screen')).to.equal(true);
+    expect($component.hasClass(style['full-screen'])).to.equal(true);
   });
 });
