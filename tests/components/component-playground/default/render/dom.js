@@ -1,4 +1,5 @@
 var FIXTURE = 'default';
+var style = require('components/component-playground.less');
 
 describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
   var $ = require('jquery'),
@@ -47,7 +48,7 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
   });
 
   it('should not have full-screen class', function() {
-    expect($component.hasClass('full-screen')).to.equal(false);
+    expect($component.hasClass(style['full-screen'])).to.equal(false);
   });
 
   it('should not render full screen button', function() {
@@ -64,6 +65,6 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
 
   it('should add selected class on home button', function() {
     expect($(component.refs.homeButton.getDOMNode())
-           .hasClass('selected-button')).to.be.true;
+           .hasClass(style['selected-button'])).to.be.true;
   });
 });

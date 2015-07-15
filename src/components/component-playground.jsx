@@ -1,4 +1,4 @@
-require('./component-playground.less');
+var style = require('./component-playground.less');
 
 var _ = require('lodash'),
     React = require('react'),
@@ -121,19 +121,19 @@ module.exports = React.createClass({
   render: function() {
     var isFixtureSelected = this.constructor.isFixtureSelected(this.props);
 
-    var classes = classNames({
-      'component-playground': true,
-      'full-screen': this.props.fullScreen
-    });
+    var classes = {};
+    classes[style['component-playground']] = true;
+    classes[style['full-screen']] = this.props.fullScreen;
+    classes = classNames(classes);
 
     return (
       <div className={classes}>
-        <div className="left-nav">
-          <div className="header">
+        <div className={style['left-nav']}>
+          <div className={style.header}>
             {this._renderHomeButton()}
             {isFixtureSelected ? this._renderMenu() : null}
           </div>
-          <div className="fixtures">
+          <div className={style['fixtures']}>
             {this._renderFixtures()}
           </div>
         </div>
@@ -143,12 +143,12 @@ module.exports = React.createClass({
   },
 
   _renderFixtures: function() {
-    return <ul className="components">
+    return <ul className={style.components}>
       {_.map(this.props.components, function(component, componentName) {
 
-        return <li className="component" key={componentName}>
+        return <li className={style.component} key={componentName}>
           <p ref={'componentName-' + componentName}
-             className="component-name">{componentName}</p>
+             className={style['component-name']}>{componentName}</p>
           {this._renderComponentFixtures(componentName, component.fixtures)}
         </li>;
 
@@ -157,7 +157,7 @@ module.exports = React.createClass({
   },
 
   _renderComponentFixtures: function(componentName, fixtures) {
-    return <ul className="component-fixtures">
+    return <ul className={style['component-fixtures']}>
       {_.map(fixtures, function(props, fixtureName) {
 
         var fixtureProps = this._extendFixtureRoute({
@@ -190,12 +190,13 @@ module.exports = React.createClass({
   },
 
   _renderFixtureEditor: function() {
-    var editorClasses = classNames({
-      'fixture-editor': true,
-      'invalid-syntax': !this.state.isFixtureUserInputValid
-    });
+    var editorClasses = {};
+    editorClasses[style['fixture-editor']] =  true;
+    editorClasses[style['invalid-syntax']] =
+      !this.state.isFixtureUserInputValid;
+    editorClasses = classNames(editorClasses);
 
-    return <div className="fixture-editor-outer">
+    return <div className={style['fixture-editor-outer']}>
       <textarea ref="editor"
                 className={editorClasses}
                 value={this.state.fixtureUserInput}
@@ -207,33 +208,35 @@ module.exports = React.createClass({
   },
 
   _renderHomeButton: function() {
-    var classes = classNames({
-      'button': true,
-      'play-button': true,
-      'selected-button': !this.constructor.isFixtureSelected(this.props)
-    });
+    var classes = {};
+    classes[style.button] = true;
+    classes[style['play-button']] = true;
+    classes[style['selected-button']] =
+      !this.constructor.isFixtureSelected(this.props);
+
+    classes = classNames(classes);
 
     return <a ref="homeButton"
               className={classes}
               href={stringifyParams({})}
               onClick={this.props.router.routeLink}>
-      <span className="electron"></span>
+      <span className={style.electron}></span>
     </a>;
   },
 
   _renderMenu: function() {
-    return <p className="menu">
+    return <p className={style.menu}>
       {this._renderFixtureEditorButton()}
       {this._renderFullScreenButton()}
     </p>;
   },
 
   _renderFixtureEditorButton: function() {
-    var classes = classNames({
-      'button': true,
-      'fixture-editor-button': true,
-      'selected-button': this.props.editor
-    });
+    var classes = {};
+    classes[style.button] = true;
+    classes[style['fixture-editor-button']] = true;
+    classes[style['selected-button']] = this.props.editor;
+    classes = classNames(classes);
 
     var editorUrlProps = this._extendFixtureRoute({
       editor: !this.props.editor
@@ -251,7 +254,7 @@ module.exports = React.createClass({
       editor: false
     });
 
-    return <a className="button full-screen-button"
+    return <a className={style.button + ' ' + style['full-screen-button']}
               href={stringifyParams(fullScreenProps)}
               ref="fullScreenButton"
               onClick={this.props.router.routeLink}></a>;
@@ -390,20 +393,16 @@ module.exports = React.createClass({
   },
 
   _getContentFrameClasses: function() {
-    var classes = {
-      'content-frame': true,
-      'with-editor': this.props.editor
-    };
-
-    classes['orientation-' + this.state.orientation] = true;
-
+    var classes = {};
+    classes[style['content-frame']] = true;
+    classes[style['with-editor']] = this.props.editor;
+    classes[style['orientation-' + this.state.orientation]] = true;
     return classNames(classes);
   },
 
   _getPreviewClasses: function() {
-    var classes = {
-      'preview': true
-    };
+    var classes = {};
+    classes[style.preview] = true;
 
     if (this.props.containerClassName) {
       classes[this.props.containerClassName] = true;
@@ -413,12 +412,10 @@ module.exports = React.createClass({
   },
 
   _getFixtureClasses: function(componentName, fixtureName) {
-    var classes = {
-      'component-fixture': true
-    };
-
-    classes['selected'] = componentName === this.props.component &&
-                          fixtureName === this.props.fixture;
+    var classes = {};
+    classes[style['component-fixture']] = true;
+    classes[style.selected] = componentName === this.props.component &&
+                              fixtureName === this.props.fixture;
 
     return classNames(classes);
   },
