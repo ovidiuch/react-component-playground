@@ -23,6 +23,7 @@ module.exports = React.createClass({
     component: React.PropTypes.string,
     fixture: React.PropTypes.string,
     editor: React.PropTypes.bool,
+    docs: React.PropTypes.bool,
     fullScreen: React.PropTypes.bool,
     containerClassName: React.PropTypes.string
   },
@@ -89,6 +90,7 @@ module.exports = React.createClass({
   getDefaultProps: function() {
     return {
       editor: false,
+      docs: false,
       fullScreen: false
     };
   },
@@ -186,6 +188,7 @@ module.exports = React.createClass({
         {this.loadChild('preview')}
       </div>
       {this.props.editor ? this._renderFixtureEditor() : null}
+      {this.props.docs ? this._renderComponentDocs() : null}
     </div>
   },
 
@@ -204,6 +207,18 @@ module.exports = React.createClass({
                 onBlur={this.onEditorBlur}
                 onChange={this.onFixtureChange}>
       </textarea>
+    </div>;
+  },
+
+  _renderComponentDocs: function() {
+    var docs = {
+      __html: this.props.components[this.props.component].docs
+    };
+    return <div className={style['component-docs-outer']}>
+      <div
+        className={style['component-docs']}
+        dangerouslySetInnerHTML={docs}
+      />
     </div>;
   },
 
@@ -227,6 +242,7 @@ module.exports = React.createClass({
   _renderMenu: function() {
     return <p className={style.menu}>
       {this._renderFixtureEditorButton()}
+      {this._renderComponentDocsButton()}
       {this._renderFullScreenButton()}
     </p>;
   },
@@ -239,7 +255,8 @@ module.exports = React.createClass({
     classes = classNames(classes);
 
     var editorUrlProps = this._extendFixtureRoute({
-      editor: !this.props.editor
+      editor: !this.props.editor,
+      docs: false
     });
 
     return <a className={classes}
@@ -248,10 +265,29 @@ module.exports = React.createClass({
               onClick={this.props.router.routeLink}></a>;
   },
 
+  _renderComponentDocsButton: function() {
+    var classes = {};
+    classes[style.button] = true;
+    classes[style['component-docs-button']] = true;
+    classes[style['selected-button']] = this.props.docs;
+    classes = classNames(classes);
+
+    var docsUrlProps = this._extendFixtureRoute({
+      docs: !this.props.docs,
+      editor: false
+    });
+
+    return <a className={classes}
+              href={stringifyParams(docsUrlProps)}
+              ref="docsButton"
+              onClick={this.props.router.routeLink}></a>;
+  },
+
   _renderFullScreenButton: function() {
     var fullScreenProps = this._extendFixtureRoute({
       fullScreen: true,
-      editor: false
+      editor: false,
+      docs: false
     });
 
     return <a className={style.button + ' ' + style['full-screen-button']}
@@ -395,7 +431,7 @@ module.exports = React.createClass({
   _getContentFrameClasses: function() {
     var classes = {};
     classes[style['content-frame']] = true;
-    classes[style['with-editor']] = this.props.editor;
+    classes[style['with-addon']] = this.props.editor || this.props.docs;
     classes[style['orientation-' + this.state.orientation]] = true;
     return classNames(classes);
   },
@@ -425,6 +461,7 @@ module.exports = React.createClass({
       component: this.props.component,
       fixture: this.props.fixture,
       editor: this.props.editor,
+      docs: this.props.docs,
       fullScreen: this.props.fullScreen
     };
 
