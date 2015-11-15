@@ -1,8 +1,7 @@
 var FIXTURE = 'selected-fixture-and-editor';
 
 describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
-  var React = require('react/addons'),
-      utils = React.addons.TestUtils,
+  var utils = require('react-addons-test-utils'),
       render = require('tests/lib/render-component.js'),
       fixture = require(`fixtures/component-playground/${FIXTURE}.js`);
 
@@ -16,11 +15,11 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
   });
 
   it('should focus on editor on fixture click', function() {
-    var editorNode = component.refs.editor.getDOMNode();
+    var editorNode = component.refs.editor;
     sinon.spy(editorNode, 'focus');
 
     utils.Simulate.click(
-        component.refs['fixtureButton-SecondComponent-index'].getDOMNode());
+        component.refs['fixtureButton-SecondComponent-index']);
 
     expect(editorNode.focus).to.have.been.called;
   });
@@ -31,7 +30,7 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
     function triggerEditorEvent(event, eventData) {
       sinon.spy(component, 'setState');
 
-      utils.Simulate[event](component.refs.editor.getDOMNode(), eventData);
+      utils.Simulate[event](component.refs.editor, eventData);
       stateSet = component.setState.lastCall.args[0];
 
       component.setState.restore();

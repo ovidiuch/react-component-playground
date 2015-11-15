@@ -1,7 +1,7 @@
 var FIXTURE = 'default';
 
 describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
-  var React = require('react'),
+  var ReactDOM = require('react-dom'),
       render = require('tests/lib/render-component.js'),
       fixture = require(`fixtures/component-playground/${FIXTURE}.js`);
 
@@ -35,7 +35,7 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
   });
 
   it('should clear fixture update interval on unmount', function() {
-    React.unmountComponentAtNode(container);
+    ReactDOM.unmountComponentAtNode(container);
 
     expect(window.clearInterval).to.have.been.calledWith(timeoutId);
   });
@@ -46,7 +46,7 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Mount`, function() {
   });
 
   it('should remove window resize listener on unmount', function() {
-    React.unmountComponentAtNode(container);
+    ReactDOM.unmountComponentAtNode(container);
 
     expect(window.removeEventListener).to.have.been.calledWith(
         'resize', component.onWindowResize);

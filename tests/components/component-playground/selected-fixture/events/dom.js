@@ -1,8 +1,7 @@
 var FIXTURE = 'selected-fixture';
 
 describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
-  var React = require('react/addons'),
-      utils = React.addons.TestUtils,
+  var utils = require('react-addons-test-utils'),
       _ = require('lodash'),
       render = require('tests/lib/render-component.js'),
       fixture = require(`fixtures/component-playground/${FIXTURE}.js`);
@@ -29,26 +28,26 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
   });
 
   it('should route link on home button', function() {
-    utils.Simulate.click(component.refs.homeButton.getDOMNode());
+    utils.Simulate.click(component.refs.homeButton);
 
     expect(component.props.router.routeLink).to.have.been.called;
   });
 
   it('should route link on editor button', function() {
-    utils.Simulate.click(component.refs.editorButton.getDOMNode());
+    utils.Simulate.click(component.refs.editorButton);
 
     expect(component.props.router.routeLink).to.have.been.called;
   });
 
   it('should route link on full screen button', function() {
-    utils.Simulate.click(component.refs.fullScreenButton.getDOMNode());
+    utils.Simulate.click(component.refs.fullScreenButton);
 
     expect(component.props.router.routeLink).to.have.been.called;
   });
 
   it('should route link on new fixture button', function() {
     utils.Simulate.click(
-        component.refs['fixtureButton-FirstComponent-error'].getDOMNode());
+        component.refs['fixtureButton-FirstComponent-error']);
 
     expect(component.props.router.goTo).to.have.been.called;
   });
@@ -60,7 +59,7 @@ describe(`ComponentPlayground (${FIXTURE}) Events DOM`, function() {
       sinon.spy(component, 'setState');
 
       utils.Simulate.click(
-          component.refs['fixtureButton-FirstComponent-default'].getDOMNode());
+          component.refs['fixtureButton-FirstComponent-default']);
 
       stateSet = component.setState.lastCall.args[0];
     });

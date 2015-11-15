@@ -22,17 +22,13 @@ describe(`ComponentPlayground (${FIXTURE}) Events Handlers`, function() {
 
   describe('orientation', function() {
     function simulateWindowResize(width, height) {
-      sinon.stub(component.refs.contentFrame, 'getDOMNode').returns({
+      component.refs.contentFrame = {
         offsetWidth: width,
         offsetHeight: height
-      });
+      };
 
       component.onWindowResize();
     }
-
-    afterEach(function() {
-      component.refs.contentFrame.getDOMNode.restore();
-    });
 
     it('should be set to landscape on width > height', function() {
       simulateWindowResize(300, 200);

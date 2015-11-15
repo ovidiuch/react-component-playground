@@ -1,4 +1,5 @@
-var $ = require('jquery'),
+var ReactDOM = require('react-dom'),
+    $ = require('jquery'),
     ComponentTree = require('react-component-tree'),
     ComponentPlayground = require('components/component-playground.jsx');
 
@@ -13,7 +14,7 @@ module.exports = function(fixture) {
     container: container
   });
 
-  $component = $(component.getDOMNode());
+  $component = $(ReactDOM.findDOMNode(component));
 
   return {
     container: container,

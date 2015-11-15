@@ -438,7 +438,7 @@ module.exports = React.createClass({
   },
 
   _focusOnEditor: function() {
-    this.refs.editor.getDOMNode().focus();
+    this.refs.editor.focus();
   },
 
   _injectPreviewChildState: function() {
@@ -454,7 +454,7 @@ module.exports = React.createClass({
       return;
     }
 
-    var contentNode = this.refs.contentFrame.getDOMNode();
+    var contentNode = this.refs.contentFrame;
 
     this.setState({
       orientation: contentNode.offsetHeight > contentNode.offsetWidth ?

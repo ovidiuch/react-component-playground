@@ -22,7 +22,8 @@ module.exports = _.merge({}, defaultFixture, {
       children: [
         React.createElement('span', {
           key: '1',
-          children: 'test child'
+          children: 'test child',
+          customProp: function() {}
         })
       ]
     },

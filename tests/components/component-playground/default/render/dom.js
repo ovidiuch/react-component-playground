@@ -19,7 +19,7 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
     for (var componentName in fixture.components) {
       var nameElement = component.refs['componentName-' + componentName];
 
-      expect($(nameElement.getDOMNode()).text()).to.equal(componentName);
+      expect($(nameElement).text()).to.equal(componentName);
     }
   });
 
@@ -42,7 +42,7 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
         var fixtureButton = component.refs[
             'fixtureButton-' + componentName + '-' + fixtureName];
 
-        expect($(fixtureButton.getDOMNode()).text()).to.equal(fixtureName);
+        expect($(fixtureButton).text()).to.equal(fixtureName);
       }
     }
   });
@@ -64,7 +64,7 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
   });
 
   it('should add selected class on home button', function() {
-    expect($(component.refs.homeButton.getDOMNode())
+    expect($(component.refs.homeButton)
            .hasClass(style['selected-button'])).to.be.true;
   });
 });
