@@ -29,7 +29,7 @@ module.exports = React.createClass({
 
   statics: {
     isFixtureSelected: function(props) {
-      return props.component && props.fixture;
+      return !!(props.component && props.fixture);
     },
 
     didFixtureChange: function(prevProps, nextProps) {
