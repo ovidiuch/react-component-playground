@@ -9,6 +9,10 @@ surfaces any implicit dependencies. It also forces you to define sane inputs
 for every component, making them more predictable and easier to debug down
 the road.
 
+React compatibility:
+- `react-component-playground@0.3` with `react@0.13` and below
+- `react-component-playground@0.4` with `react@0.14` and above
+
 Features include:
 
 - Rendering full-screen components or with the navigation pane on the side.

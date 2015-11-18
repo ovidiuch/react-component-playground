@@ -16,20 +16,20 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
   });
 
   it('should add orientation class on content frame element', function() {
-    var $contentFrame = $(component.refs.contentFrame.getDOMNode());
+    var $contentFrame = $(component.refs.contentFrame);
 
     expect($contentFrame.hasClass(
         style['orientation-' + component.state.orientation])).to.be.true;
   });
 
   it('should add container class on preview element', function() {
-    var $previewContainer = $(component.refs.previewContainer.getDOMNode());
+    var $previewContainer = $(component.refs.previewContainer);
 
     expect($previewContainer.hasClass(fixture.containerClassName)).to.be.true;
   });
 
   it('should remove selected class on home button', function() {
-    expect($(component.refs.homeButton.getDOMNode())
+    expect($(component.refs.homeButton)
            .hasClass(style['selected-button'])).to.be.false;
   });
 

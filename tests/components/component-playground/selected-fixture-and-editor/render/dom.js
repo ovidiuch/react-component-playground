@@ -20,12 +20,12 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
   });
 
   it('should add editor class on content frame node', function() {
-    expect($(component.refs.contentFrame.getDOMNode())
+    expect($(component.refs.contentFrame)
            .hasClass(style['with-editor'])).to.be.true;
   });
 
   it('should add selected class on editor button', function() {
-    expect($(component.refs.editorButton.getDOMNode())
+    expect($(component.refs.editorButton)
            .hasClass(style['selected-button'])).to.be.true;
   });
 
@@ -34,7 +34,7 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
       fixtureUserInput: 'lorem ipsum'
     });
 
-    expect(component.refs.editor.getDOMNode().value).to.equal('lorem ipsum');
+    expect(component.refs.editor.value).to.equal('lorem ipsum');
   });
 
   it('should add invalid class on editor on state flag', function() {
@@ -42,7 +42,7 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
       isFixtureUserInputValid: false
     });
 
-    expect($(component.refs.editor.getDOMNode())
+    expect($(component.refs.editor)
            .hasClass(style['invalid-syntax'])).to.be.true;
   });
 });

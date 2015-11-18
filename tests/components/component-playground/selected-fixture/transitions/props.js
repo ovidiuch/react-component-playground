@@ -18,6 +18,8 @@ describe(`ComponentPlayground (${FIXTURE}) Transitions Props`, function() {
     sinon.stub(ComponentTree, 'injectState');
     sinon.spy(component, 'setState');
 
+    // TODO: Replace with new render call. Problem is instance changes from one
+    // render to another
     component.setProps({
       component: 'SecondComponent',
       fixture: 'index'

@@ -29,7 +29,7 @@ module.exports = React.createClass({
 
   statics: {
     isFixtureSelected: function(props) {
-      return props.component && props.fixture;
+      return !!(props.component && props.fixture);
     },
 
     didFixtureChange: function(prevProps, nextProps) {
@@ -119,7 +119,7 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var isFixtureSelected = this.constructor.isFixtureSelected(this.props);
+    var isFixtureSelected = this._isFixtureSelected();
 
     var classes = {};
     classes[style['component-playground']] = true;
@@ -211,8 +211,7 @@ module.exports = React.createClass({
     var classes = {};
     classes[style.button] = true;
     classes[style['play-button']] = true;
-    classes[style['selected-button']] =
-      !this.constructor.isFixtureSelected(this.props);
+    classes[style['selected-button']] = !this._isFixtureSelected();
 
     classes = classNames(classes);
 
@@ -386,6 +385,10 @@ module.exports = React.createClass({
     this._updateContentFrameOrientation();
   },
 
+  _isFixtureSelected: function() {
+    return this.constructor.isFixtureSelected(this.props);
+  },
+
   _getPreviewComponentKey: function() {
     return this.props.component + '-' +
            this.props.fixture + '-' +
@@ -438,7 +441,7 @@ module.exports = React.createClass({
   },
 
   _focusOnEditor: function() {
-    this.refs.editor.getDOMNode().focus();
+    this.refs.editor.focus();
   },
 
   _injectPreviewChildState: function() {
@@ -450,11 +453,11 @@ module.exports = React.createClass({
   },
 
   _updateContentFrameOrientation: function() {
-    if (!this.constructor.isFixtureSelected(this.props)) {
+    if (!this._isFixtureSelected()) {
       return;
     }
 
-    var contentNode = this.refs.contentFrame.getDOMNode();
+    var contentNode = this.refs.contentFrame;
 
     this.setState({
       orientation: contentNode.offsetHeight > contentNode.offsetWidth ?
