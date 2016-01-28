@@ -1,0 +1,47 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/Users/sean.vieira/.local/opt/nvm/versions/node/v5.3.0/bin/node',
+1 verbose cli   '/Users/sean.vieira/.local/opt/nvm/versions/node/v5.3.0/bin/npm',
+1 verbose cli   'run',
+1 verbose cli   'coveralls' ]
+2 info using npm@3.3.12
+3 info using node@v5.3.0
+4 verbose run-script [ 'precoveralls', 'coveralls', 'postcoveralls' ]
+5 info lifecycle react-component-playground@0.4.0~precoveralls: react-component-playground@0.4.0
+6 silly lifecycle react-component-playground@0.4.0~precoveralls: no script for precoveralls, continuing
+7 info lifecycle react-component-playground@0.4.0~coveralls: react-component-playground@0.4.0
+8 verbose lifecycle react-component-playground@0.4.0~coveralls: unsafe-perm in lifecycle true
+9 verbose lifecycle react-component-playground@0.4.0~coveralls: PATH: /Users/sean.vieira/.local/opt/nvm/versions/node/v5.3.0/lib/node_modules/npm/bin/node-gyp-bin:/Users/sean.vieira/Documents/Development/Experiments/react-component-playground/node_modules/.bin:/Users/sean.vieira/.local/opt/nvm/versions/node/v5.3.0/bin:~/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/local/opt/ruby/bin:/usr/local/opt/python3/bin:/usr/bin:/bin:/usr/sbin:/sbin
+10 verbose lifecycle react-component-playground@0.4.0~coveralls: CWD: /Users/sean.vieira/Documents/Development/Experiments/react-component-playground
+11 silly lifecycle react-component-playground@0.4.0~coveralls: Args: [ '-c',
+11 silly lifecycle   'cat tests/coverage/*/lcov.info | node_modules/coveralls/bin/coveralls.js' ]
+12 silly lifecycle react-component-playground@0.4.0~coveralls: Returned: code: 1  signal: null
+13 info lifecycle react-component-playground@0.4.0~coveralls: Failed to exec coveralls script
+14 verbose stack Error: react-component-playground@0.4.0 coveralls: `cat tests/coverage/*/lcov.info | node_modules/coveralls/bin/coveralls.js`
+14 verbose stack Exit status 1
+14 verbose stack     at EventEmitter.<anonymous> (/Users/sean.vieira/.local/opt/nvm/versions/node/v5.3.0/lib/node_modules/npm/lib/utils/lifecycle.js:232:16)
+14 verbose stack     at emitTwo (events.js:87:13)
+14 verbose stack     at EventEmitter.emit (events.js:172:7)
+14 verbose stack     at ChildProcess.<anonymous> (/Users/sean.vieira/.local/opt/nvm/versions/node/v5.3.0/lib/node_modules/npm/lib/utils/spawn.js:24:14)
+14 verbose stack     at emitTwo (events.js:87:13)
+14 verbose stack     at ChildProcess.emit (events.js:172:7)
+14 verbose stack     at maybeClose (internal/child_process.js:818:16)
+14 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
+15 verbose pkgid react-component-playground@0.4.0
+16 verbose cwd /Users/sean.vieira/Documents/Development/Experiments/react-component-playground
+17 error Darwin 14.5.0
+18 error argv "/Users/sean.vieira/.local/opt/nvm/versions/node/v5.3.0/bin/node" "/Users/sean.vieira/.local/opt/nvm/versions/node/v5.3.0/bin/npm" "run" "coveralls"
+19 error node v5.3.0
+20 error npm  v3.3.12
+21 error code ELIFECYCLE
+22 error react-component-playground@0.4.0 coveralls: `cat tests/coverage/*/lcov.info | node_modules/coveralls/bin/coveralls.js`
+22 error Exit status 1
+23 error Failed at the react-component-playground@0.4.0 coveralls script 'cat tests/coverage/*/lcov.info | node_modules/coveralls/bin/coveralls.js'.
+23 error Make sure you have the latest version of node.js and npm installed.
+23 error If you do, this is most likely a problem with the react-component-playground package,
+23 error not with npm itself.
+23 error Tell the author that this fails on your system:
+23 error     cat tests/coverage/*/lcov.info | node_modules/coveralls/bin/coveralls.js
+23 error You can get their info via:
+23 error     npm owner ls react-component-playground
+23 error There is likely additional logging output above.
+24 verbose exit [ 1, true ]
