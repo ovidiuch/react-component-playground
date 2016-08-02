@@ -89,7 +89,7 @@ module.exports = React.createClass({
   getDefaultProps: function() {
     return {
       editor: false,
-      fullScreen: false
+      fullScreen: false,
     };
   },
 
@@ -97,7 +97,8 @@ module.exports = React.createClass({
     var defaultState = {
       fixtureChange: 0,
       isEditorFocused: false,
-      orientation: 'landscape'
+      orientation: 'landscape',
+      searchText: ''
     };
 
     return _.assign(defaultState, this.constructor.getFixtureState(this.props));
@@ -134,6 +135,9 @@ module.exports = React.createClass({
             {isFixtureSelected ? this._renderMenu() : null}
           </div>
           <div className={style['fixtures']}>
+            <div className={style['filter-input-container']}>
+              <input className={style['filter-input']} onChange={this.onChange}/>
+            </div>
             {this._renderFixtures()}
           </div>
         </div>
@@ -142,10 +146,18 @@ module.exports = React.createClass({
     );
   },
 
-  _renderFixtures: function() {
-    return <ul className={style.components}>
-      {_.map(this.props.components, function(component, componentName) {
+  onChange: function(e) {
+    this.setState({
+      searchText: e.target.value
+    });
+  },
 
+  _renderFixtures: function() {
+    console.log(this._getFilteredFixtures())
+    console.log(this.props.components)
+    console.log(_.isEqual(this.props.components, this._getFilteredFixtures()))
+    return <ul className={style.components}>
+      {_.map(this._getFilteredFixtures(), function(component, componentName) {
         return <li className={style.component} key={componentName}>
           <p ref={'componentName-' + componentName}
              className={style['component-name']}>{componentName}</p>
@@ -156,10 +168,39 @@ module.exports = React.createClass({
     </ul>
   },
 
+  _getFilteredFixtures() {
+    var searchText = this.state.searchText;
+
+    return _.reduce(this.props.components, function(acc, component, componentName) {
+        var fixtureNames = Object.keys(component.fixtures);
+        var filteredFixtures = _.filter(fixtureNames, function(fixtureName) {
+          return fixtureName.indexOf(this.state.searchText) !== -1 ||
+            this._isCurrentFixtureSelected(componentName, fixtureName);
+        }.bind(this));
+
+        // There's no need to show components that doesn't have any results
+        if (filteredFixtures.length === 0) {
+          return acc;
+        }
+
+        var fixtures = _.reduce(filteredFixtures, function(acc, fixtureName) {
+          acc[fixtureName] = component.fixtures[fixtureName];
+
+          return acc;
+        }, {});
+
+        acc[componentName] = {
+          fixtures: fixtures,
+          class: component.class
+        }
+
+        return acc;
+      }.bind(this), {});
+  },
+
   _renderComponentFixtures: function(componentName, fixtures) {
     return <ul className={style['component-fixtures']}>
       {_.map(fixtures, function(props, fixtureName) {
-
         var fixtureProps = this._extendFixtureRoute({
           component: componentName,
           fixture: fixtureName
@@ -417,10 +458,15 @@ module.exports = React.createClass({
   _getFixtureClasses: function(componentName, fixtureName) {
     var classes = {};
     classes[style['component-fixture']] = true;
-    classes[style.selected] = componentName === this.props.component &&
-                              fixtureName === this.props.fixture;
+    classes[style.selected] = this._isCurrentFixtureSelected(componentName,
+                                                             fixtureName);
 
     return classNames(classes);
+  },
+
+  _isCurrentFixtureSelected(componentName, fixtureName) {
+    return componentName === this.props.component &&
+           fixtureName === this.props.fixture;
   },
 
   _extendFixtureRoute: function(newProps) {

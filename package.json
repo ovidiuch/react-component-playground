@@ -8,15 +8,15 @@
     "url": "https://github.com/skidding/react-component-playground.git"
   },
   "dependencies": {
-    "classnames": "^1.2.0",
     "lodash": "^3.6.0",
-    "react-component-tree": "^0.3.1",
-    "react-querystring-router": "^0.3.0"
+    "react-component-tree": "^0.4.0",
+    "react-querystring-router": "^0.4.0"
   },
   "devDependencies": {
     "babel-core": "^5.0.12",
     "babel-loader": "^5.0.0",
     "chai": "^2.2.0",
+    "classnames": "^2.2.5",
     "coveralls": "^2.11.2",
     "css-loader": "^0.15.2",
     "esprima-fb": "^14001.1.0-dev-harmony-fb",
@@ -36,15 +36,17 @@
     "less": "^2.5.0",
     "less-loader": "^2.2.0",
     "mocha": "^2.2.4",
-    "react": "^0.14.2",
+    "react": "^0.14.8",
     "react-addons-test-utils": "^0.14.2",
+    "react-dom": "^0.14.8",
     "sinon": "^1.14.1",
     "sinon-chai": "^2.7.0",
     "style-loader": "^0.12.3",
     "webpack": "^1.8.2"
   },
   "peerDependencies": {
-    "react": "^0.14.2"
+    "react-dom": "^0.14.8",
+    "react": "^0.14.8"
   },
   "scripts": {
     "pretest": "jscs --esprima=esprima-fb ./",
