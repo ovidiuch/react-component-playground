@@ -488,6 +488,9 @@ module.exports = React.createClass({
     return _.reduce(components, function(acc, componentProps, componentName) {
       var fixtureNames = Object.keys(componentProps.fixtures);
       var filteredFixtureNames = _.filter(fixtureNames, function(fixtureName) {
+
+        // Always show the selected fixture even if the search value doesn't
+        // match its name because we'd like to always have it visible.
         return fixtureName.indexOf(this.state.searchText) !== -1 ||
                this._isCurrentFixtureSelected(componentName, fixtureName);
       }.bind(this));
