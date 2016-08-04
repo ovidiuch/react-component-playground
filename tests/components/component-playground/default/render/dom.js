@@ -67,4 +67,18 @@ describe(`ComponentPlayground (${FIXTURE}) Render DOM`, function() {
     expect($(component.refs.homeButton)
            .hasClass(style['selected-button'])).to.be.true;
   });
+
+  it('should render the search input', function() {
+    expect(component.refs.filterInput).to.exist;
+  });
+
+  it('should set the correct class name to search input', function() {
+    expect($(component.refs.filterInput)
+           .hasClass(style['filter-input'])).to.be.true;
+  });
+
+  it('should set onSearchChange event to search input', function() {
+    expect(component.refs.filterInput.props.onChange).to.equal(
+        component.onSearchChange);
+  });
 });

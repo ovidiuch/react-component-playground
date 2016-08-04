@@ -137,6 +137,7 @@ module.exports = React.createClass({
           <div className={style['fixtures']}>
             <div className={style['filter-input-container']}>
               <input
+                ref="filterInput"
                 className={style['filter-input']}
                 onChange={this.onSearchChange}
               />
