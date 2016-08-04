@@ -484,7 +484,7 @@ module.exports = React.createClass({
   },
 
   _getFilteredFixtures() {
-    var components = this.props.components;
+    var components = _.cloneDeep(this.props.components);
 
     return _.reduce(components, function(acc, componentProps, componentName) {
       var fixtureNames = Object.keys(componentProps.fixtures);
