@@ -23,6 +23,20 @@
 @play-button-electron-color: #61dafb;
 @play-button-electron-duration: 5s;
 
+.stretch() {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.vertical-center() {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 @keyframes roundandround {
   to {
     transform: rotate(360deg);
@@ -46,10 +60,9 @@
   height: 100%;
 
   > .left-nav {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
+    .stretch();
+
+    right: auto;
     width: @left-nav-width;
     background: @left-nav-bgcolor;
     font-family: @default-font-family;
@@ -133,11 +146,9 @@
     }
 
     .fixtures {
-      position: absolute;
+      .stretch();
+
       top: @header-height;
-      bottom: 0;
-      left: 0;
-      right: 0;
       background: @default-darken-color;
       overflow-x: hidden;
       overflow-y: auto;
@@ -203,18 +214,13 @@
   }
 
   > .content-frame {
-    position: absolute;
-    top: 0;
-    bottom: 0;
+    .stretch();
+
     left: @left-nav-width;
-    right: 0;
 
     > .fixture-editor-outer {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      .stretch();
+
       border: 1px solid @editor-border-color;
       background: #f8f5ec;
 
@@ -239,11 +245,8 @@
     }
 
     > .preview {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      .stretch();
+
       overflow: auto;
       // Checkerboard effect on background
       background-image:
@@ -301,25 +304,32 @@
 }
 
 .filter-input-container {
-  padding: @default-spacing;
+  position: relative;
   border-bottom: 1px solid @left-nav-bgcolor-selected;
 }
 
+.filter-input-icon {
+  .vertical-center();
+
+  right: @default-spacing;
+  width: @fixture-line-height;
+  height: @fixture-line-height;
+  background-image: @search-input-icon;
+  background-size: @fixture-line-height * 3 / 4;
+  background-position: center right;
+  background-repeat: no-repeat;
+}
 .filter-input {
+  background-color: @left-nav-bgcolor;
   box-sizing: border-box;
   display: block;
   height: @fixture-line-height;
-  padding: 0 @default-spacing;
-  padding-right: @fixture-line-height;
   width: 100%;
+  padding: 0 @default-spacing;
+  padding-right: @fixture-line-height + @default-spacing;
   border: 0;
   box-shadow: none;
   font-size: @editor-font-size;
-  background-color: @left-nav-bgcolor;
-  background-image: @search-input-icon;
-  background-size: @fixture-line-height;
-  background-position: center right;
-  background-repeat: no-repeat;
   transition: all .3s ease;
   color: @left-nav-color;
 

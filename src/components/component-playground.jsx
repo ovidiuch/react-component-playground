@@ -138,8 +138,9 @@ module.exports = React.createClass({
             <div className={style['filter-input-container']}>
               <input
                 className={style['filter-input']}
-                onChange={this.onChange}
+                onChange={this.onSearchChange}
               />
+              <i className={style['filter-input-icon']}/>
             </div>
             {this._renderFixtures()}
           </div>
@@ -390,7 +391,7 @@ module.exports = React.createClass({
     this._updateContentFrameOrientation();
   },
 
-  onChange: function(e) {
+  onSearchChange: function(e) {
     this.setState({
       searchText: e.target.value
     });
