@@ -485,28 +485,27 @@ module.exports = React.createClass({
   _getFilteredFixtures() {
     var components = this.props.components;
 
-    return _.reduce(components, function(acc, component, componentName) {
-      var fixtureNames = Object.keys(component.fixtures);
-      var filteredFixtures = _.filter(fixtureNames, function(fixtureName) {
+    return _.reduce(components, function(acc, componentProps, componentName) {
+      var fixtureNames = Object.keys(componentProps.fixtures);
+      var filteredFixtureNames = _.filter(fixtureNames, function(fixtureName) {
         return fixtureName.indexOf(this.state.searchText) !== -1 ||
                this._isCurrentFixtureSelected(componentName, fixtureName);
       }.bind(this));
 
       // There's no need to show components that doesn't have any results
-      if (filteredFixtures.length === 0) {
+      if (filteredFixtureNames.length === 0) {
         return acc;
       }
 
-      var fixtures = _.reduce(filteredFixtures, function(acc, fixtureName) {
-        acc[fixtureName] = component.fixtures[fixtureName];
+      var fixtures = _.reduce(filteredFixtureNames, function(acc, fixtureName) {
+        acc[fixtureName] = componentProps.fixtures[fixtureName];
 
         return acc;
       }, {});
 
-      acc[componentName] = {
-        fixtures: fixtures,
-        class: component.class
-      }
+      acc[componentName] = _.extend(componentProps, {
+        fixtures: fixtures
+      });
 
       return acc;
     }.bind(this), {});
