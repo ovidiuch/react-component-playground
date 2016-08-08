@@ -311,12 +311,12 @@
 .filter-input-icon {
   .vertical-center();
 
-  right: @default-spacing;
-  width: @fixture-line-height;
-  height: @fixture-line-height;
+  left: @default-spacing;
+  width: @fixture-line-height * 3 / 4;
+  height: @fixture-line-height * 3 / 4;
   background-image: @search-input-icon;
-  background-size: @fixture-line-height * 3 / 4;
-  background-position: center right;
+  background-size: contain;
+  background-position: center center;
   background-repeat: no-repeat;
 }
 .filter-input {
@@ -326,7 +326,7 @@
   height: @fixture-line-height;
   width: 100%;
   padding: 0 @default-spacing;
-  padding-right: @fixture-line-height + @default-spacing;
+  padding-left: @fixture-line-height + @default-spacing;
   border: 0;
   box-shadow: none;
   font-size: @editor-font-size;
