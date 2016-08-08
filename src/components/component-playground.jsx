@@ -484,10 +484,10 @@ module.exports = React.createClass({
   },
 
   _getFilteredFixtures() {
-    var components = _.cloneDeep(this.props.components);
+    var components = this.props.components;
 
-    return _.reduce(components, function(acc, componentProps, componentName) {
-      var fixtureNames = Object.keys(componentProps.fixtures);
+    return _.reduce(components, function(acc, component, componentName) {
+      var fixtureNames = Object.keys(component.fixtures);
       var filteredFixtureNames = _.filter(fixtureNames, function(fixtureName) {
 
         // Always show the selected fixture even if the search value doesn't
@@ -502,12 +502,12 @@ module.exports = React.createClass({
       }
 
       var fixtures = _.reduce(filteredFixtureNames, function(acc, fixtureName) {
-        acc[fixtureName] = componentProps.fixtures[fixtureName];
+        acc[fixtureName] = component.fixtures[fixtureName];
 
         return acc;
       }, {});
 
-      acc[componentName] = _.extend(componentProps, {
+      acc[componentName] = _.assign({}, component, {
         fixtures: fixtures
       });
 
