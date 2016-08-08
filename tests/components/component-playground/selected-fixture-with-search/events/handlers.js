@@ -15,9 +15,9 @@ describe(`ComponentPlayground (${FIXTURE}) Events Handlers`, function() {
   });
 
   it('should store the search input value in state', function() {
-    component.onSearchChange({target: {value: 'index'}});
+    component.onSearchChange({target: {value: 'second'}});
 
-    expect(component.state.searchText).to.equal('index');
+    expect(component.state.searchText).to.equal('second');
   });
 
   it('should filter the components', function() {

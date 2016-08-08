@@ -139,7 +139,7 @@ module.exports = React.createClass({
               <input
                 ref="filterInput"
                 className={style['filter-input']}
-                placeholder={"Search for a fixture"}
+                placeholder="Search for a component"
                 onChange={this.onSearchChange}
               />
               <i className={style['filter-input-icon']}/>
@@ -488,29 +488,17 @@ module.exports = React.createClass({
     var components = this.props.components;
 
     return _.reduce(components, function(acc, component, componentName) {
-      var fixtureNames = Object.keys(component.fixtures);
-      var filteredFixtureNames = _.filter(fixtureNames, function(fixtureName) {
+      var isCurrentComponent = this.props.component === componentName,
+          searchText = this.state.searchText.toLowerCase(),
+          name = componentName.toLowerCase();
 
-        // Always show the selected fixture even if the search value doesn't
-        // match its name because we'd like to always have it visible.
-        return fixtureName.indexOf(this.state.searchText) !== -1 ||
-               this._isCurrentFixtureSelected(componentName, fixtureName);
-      }.bind(this));
-
-      // There's no need to show components that doesn't have any results
-      if (filteredFixtureNames.length === 0) {
+      // Always show the selected component even if the search value doesn't
+      // match its name because we'd like to always have it visible.
+      if (name.indexOf(searchText) === -1 && !isCurrentComponent) {
         return acc;
       }
 
-      var fixtures = _.reduce(filteredFixtureNames, function(acc, fixtureName) {
-        acc[fixtureName] = component.fixtures[fixtureName];
-
-        return acc;
-      }, {});
-
-      acc[componentName] = _.assign({}, component, {
-        fixtures: fixtures
-      });
+      acc[componentName] = _.assign({}, component);
 
       return acc;
     }.bind(this), {});

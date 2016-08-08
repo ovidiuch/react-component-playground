@@ -3,6 +3,6 @@ var _ = require('lodash'),
 
 module.exports = _.merge({}, selectedFixture, {
   state: {
-    searchText: 'ind'
+    searchText: 'seco'
   }
 });
