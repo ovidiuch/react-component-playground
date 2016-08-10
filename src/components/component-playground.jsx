@@ -6,7 +6,8 @@ var _ = require('lodash'),
     ComponentTree = require('react-component-tree'),
     stringifyParams = require('react-querystring-router').uri.stringifyParams,
     parseLocation = require('react-querystring-router').uri.parseLocation,
-    isSerializable = require('../lib/is-serializable.js').isSerializable;
+    isSerializable = require('../lib/is-serializable.js').isSerializable,
+    fuzzaldrinPlus = require('fuzzaldrin-plus');
 
 module.exports = React.createClass({
   /**
@@ -139,7 +140,7 @@ module.exports = React.createClass({
               <input
                 ref="filterInput"
                 className={style['filter-input']}
-                placeholder="Search for a component"
+                placeholder="Search it"
                 onChange={this.onSearchChange}
               />
               <i className={style['filter-input-icon']}/>
@@ -487,18 +488,42 @@ module.exports = React.createClass({
   _getFilteredFixtures() {
     var components = this.props.components;
 
-    return _.reduce(components, function(acc, component, componentName) {
-      var isCurrentComponent = this.props.component === componentName,
-          searchText = this.state.searchText.toLowerCase(),
-          name = componentName.toLowerCase();
+    if (this.state.searchText.length < 2) {
+      return components;
+    }
 
-      // Always show the selected component even if the search value doesn't
-      // match its name because we'd like to always have it visible.
-      if (name.indexOf(searchText) === -1 && !isCurrentComponent) {
+    return _.reduce(components, function(acc, component, componentName) {
+      var fixtureNames = Object.keys(component.fixtures);
+      var search = this.state.searchText;
+
+      var filteredFixtureNames = _.filter(fixtureNames, function(fixtureName) {
+        var componentAndFixture = componentName + fixtureName,
+            fixtureAndComponent = fixtureName + componentName;
+
+        // Ensure that the fuzzy search is working in both direction.
+        // component + fixture and fixture + component. That's because the user
+        // can search for fixture name and afterwards for component name and
+        // we want to show the correct result.
+        return !_.isEmpty(fuzzaldrinPlus.match(componentAndFixture, search)) ||
+               !_.isEmpty(fuzzaldrinPlus.match(fixtureAndComponent, search)) ||
+               this._isCurrentFixtureSelected(componentName, fixtureName);
+      }.bind(this));
+
+      // Do not render the component if there are no fixtures
+      if (filteredFixtureNames.length === 0) {
         return acc;
       }
 
-      acc[componentName] = _.assign({}, component);
+      // Show only the fixtures that matched the search query
+      var fixtures = _.reduce(filteredFixtureNames, function(acc, fixture) {
+        acc[fixture] = component.fixtures[fixture];
+
+        return acc;
+      }, {});
+
+      acc[componentName] = _.assign({}, component, {
+        fixtures: fixtures
+      });
 
       return acc;
     }.bind(this), {});

@@ -8,6 +8,7 @@
     "url": "https://github.com/skidding/react-component-playground.git"
   },
   "dependencies": {
+    "fuzzaldrin-plus": "^0.3.1",
     "lodash": "^3.6.0",
     "react-component-tree": "^0.4.0",
     "react-querystring-router": "^0.4.0"
