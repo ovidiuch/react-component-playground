@@ -6,7 +6,8 @@ var _ = require('lodash'),
     ComponentTree = require('react-component-tree'),
     stringifyParams = require('react-querystring-router').uri.stringifyParams,
     parseLocation = require('react-querystring-router').uri.parseLocation,
-    isSerializable = require('../lib/is-serializable.js').isSerializable;
+    isSerializable = require('../lib/is-serializable.js').isSerializable,
+    fuzzaldrinPlus = require('fuzzaldrin-plus');
 
 module.exports = React.createClass({
   /**
@@ -89,7 +90,7 @@ module.exports = React.createClass({
   getDefaultProps: function() {
     return {
       editor: false,
-      fullScreen: false
+      fullScreen: false,
     };
   },
 
@@ -97,7 +98,8 @@ module.exports = React.createClass({
     var defaultState = {
       fixtureChange: 0,
       isEditorFocused: false,
-      orientation: 'landscape'
+      orientation: 'landscape',
+      searchText: ''
     };
 
     return _.assign(defaultState, this.constructor.getFixtureState(this.props));
@@ -134,6 +136,15 @@ module.exports = React.createClass({
             {isFixtureSelected ? this._renderMenu() : null}
           </div>
           <div className={style['fixtures']}>
+            <div className={style['filter-input-container']}>
+              <input
+                ref="filterInput"
+                className={style['filter-input']}
+                placeholder="Search it"
+                onChange={this.onSearchChange}
+              />
+              <i className={style['filter-input-icon']}/>
+            </div>
             {this._renderFixtures()}
           </div>
         </div>
@@ -144,8 +155,7 @@ module.exports = React.createClass({
 
   _renderFixtures: function() {
     return <ul className={style.components}>
-      {_.map(this.props.components, function(component, componentName) {
-
+      {_.map(this._getFilteredFixtures(), function(component, componentName) {
         return <li className={style.component} key={componentName}>
           <p ref={'componentName-' + componentName}
              className={style['component-name']}>{componentName}</p>
@@ -159,7 +169,6 @@ module.exports = React.createClass({
   _renderComponentFixtures: function(componentName, fixtures) {
     return <ul className={style['component-fixtures']}>
       {_.map(fixtures, function(props, fixtureName) {
-
         var fixtureProps = this._extendFixtureRoute({
           component: componentName,
           fixture: fixtureName
@@ -385,6 +394,12 @@ module.exports = React.createClass({
     this._updateContentFrameOrientation();
   },
 
+  onSearchChange: function(e) {
+    this.setState({
+      searchText: e.target.value
+    });
+  },
+
   _isFixtureSelected: function() {
     return this.constructor.isFixtureSelected(this.props);
   },
@@ -417,10 +432,15 @@ module.exports = React.createClass({
   _getFixtureClasses: function(componentName, fixtureName) {
     var classes = {};
     classes[style['component-fixture']] = true;
-    classes[style.selected] = componentName === this.props.component &&
-                              fixtureName === this.props.fixture;
+    classes[style.selected] = this._isCurrentFixtureSelected(componentName,
+                                                             fixtureName);
 
     return classNames(classes);
+  },
+
+  _isCurrentFixtureSelected(componentName, fixtureName) {
+    return componentName === this.props.component &&
+           fixtureName === this.props.fixture;
   },
 
   _extendFixtureRoute: function(newProps) {
@@ -463,5 +483,49 @@ module.exports = React.createClass({
       orientation: contentNode.offsetHeight > contentNode.offsetWidth ?
                    'portrait' : 'landscape'
     });
+  },
+
+  _getFilteredFixtures() {
+    var components = this.props.components;
+
+    if (this.state.searchText.length < 2) {
+      return components;
+    }
+
+    return _.reduce(components, function(acc, component, componentName) {
+      var fixtureNames = Object.keys(component.fixtures);
+      var search = this.state.searchText;
+
+      var filteredFixtureNames = _.filter(fixtureNames, function(fixtureName) {
+        var componentAndFixture = componentName + fixtureName,
+            fixtureAndComponent = fixtureName + componentName;
+
+        // Ensure that the fuzzy search is working in both direction.
+        // component + fixture and fixture + component. That's because the user
+        // can search for fixture name and afterwards for component name and
+        // we want to show the correct result.
+        return !_.isEmpty(fuzzaldrinPlus.match(componentAndFixture, search)) ||
+               !_.isEmpty(fuzzaldrinPlus.match(fixtureAndComponent, search)) ||
+               this._isCurrentFixtureSelected(componentName, fixtureName);
+      }.bind(this));
+
+      // Do not render the component if there are no fixtures
+      if (filteredFixtureNames.length === 0) {
+        return acc;
+      }
+
+      // Show only the fixtures that matched the search query
+      var fixtures = _.reduce(filteredFixtureNames, function(acc, fixture) {
+        acc[fixture] = component.fixtures[fixture];
+
+        return acc;
+      }, {});
+
+      acc[componentName] = _.assign({}, component, {
+        fixtures: fixtures
+      });
+
+      return acc;
+    }.bind(this), {});
   }
 });
