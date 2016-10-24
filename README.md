@@ -1,3 +1,6 @@
+> ## Deprecated
+> This package has been merged into the [React Cosmos](https://github.com/react-cosmos/react-cosmos) [monorepo](https://github.com/react-cosmos/react-cosmos/tree/master/packages).
+
 # React Component Playground
 [![Build Status](https://travis-ci.org/skidding/react-component-playground.svg?branch=master)](https://travis-ci.org/skidding/react-component-playground) [![Coverage Status](https://coveralls.io/repos/skidding/react-component-playground/badge.svg?branch=master)](https://coveralls.io/r/skidding/react-component-playground?branch=master)
 
