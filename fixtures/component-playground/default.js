@@ -12,6 +12,12 @@ class SecondComponent extends React.Component {
   }
 }
 
+class CustomClass {
+  toJSON() {
+    return {x: 1, y: 2};
+  }
+}
+
 module.exports = {
   components: {
     FirstComponent: {
@@ -21,7 +27,8 @@ module.exports = {
           myProp: false,
           nested: {
             foo: 'bar',
-            shouldBeCloned: {}
+            shouldBeCloned: {},
+            customToJSON: new CustomClass()
           },
           children: [
             React.createElement('span', {
