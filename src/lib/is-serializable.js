@@ -9,6 +9,10 @@ exports.isSerializable = function(obj) {
     return true;
   }
 
+  if (_.isFunction(obj.toJSON)) {
+    return true;
+  }
+
   if (!_.isPlainObject(obj) &&
       !_.isArray(obj)) {
     return false;
